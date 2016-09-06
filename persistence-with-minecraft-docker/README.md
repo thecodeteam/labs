@@ -2,6 +2,8 @@
 
 {code} has been showing demos with REX-Ray using applications like Redis, Postgres and other databases. However, recovering a few tables isn't *that* exciting. This demo will show how to persist [Minecraft](https://minecraft.net/en/) with Docker Swarm Mode and Docker Service.
 
+![Join a multiplayer game](img/mc01.png "Join a multiplayer game")
+
 ### Prerequisites
 
 - A valid login to the [Minecraft network](https://minecraft.net/en/store/minecraft/?ref=ld#buy) - ($26.95 USD)
