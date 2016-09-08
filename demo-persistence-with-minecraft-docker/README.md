@@ -7,34 +7,19 @@
 ### Prerequisites
 
 - A valid login to the [Minecraft network](https://minecraft.net/en/store/minecraft/?ref=ld#buy) - ($26.95 USD)
-- A multi-node computing environment with a storage platform that is compatible with [REX-Ray](https://github.com/emccode/rexray)
+- A multi-node computing environment with a storage platform that is compatible with [REX-Ray](https://github.com/emccode/rexray). [Examples](https://github.com/codedellemc/demo#environment-quickstarts)
 - [REX-Ray must be installed](http://rexray.readthedocs.io/en/latest/) on each node and [configured with the preemption flag](http://libstorage.readthedocs.io/en/stable/user-guide/config/#volume-configuration)
 - Docker 1.12+ must be installed on each node
 
-This guide will use the [Vagrant ScaleIO](https://github.com/emccode/vagrant/tree/master/scaleio) deployment because the installation of Docker and REX-Ray is done automatically and the IP addresses never change. 
+### Environment
+This guide was written for use by the [Vagrant ScaleIO](https://github.com/emccode/vagrant/tree/master/scaleio) ([setup instructions](https://github.com/codedellemc/demo/tree/master/setup-scaleio-vagrant)) deployment because the IP addresses never change. However, any REX-Ray compatible storage platform can be used and disregard instructions for MDM1, MDM2, and TB usage. 
 
-```
-$ git clone https://github.com/emccode/vagrant
-$ cd vagrant/scaleio/
-$ vagrant up --provider virtualbox
-```
-
-Open 3 terminal sessions to MDM1, MDM2, and TB. In this scenario, MDM1 is the API gateway and REX-Ray uses it to access the storage platform.
-
-```
-...window 1...
-$ vagrant ssh mdm1
-...window 2...
-$ vagrant ssh mdm2
-...window 3...
-$ vagrant ssh tb
-```
 
 ### Create the Docker Swarm Cluster
 
 All nodes should have Docker 1.12.1 or higher installed to take advantage of the the built-in [Swarm Mode](https://docs.docker.com/engine/swarm/) capability. 
 
-On terminal session MDM1, initialize the Docker Swarm cluster by setting MDM1 as a Swarm Manager.
+Initialize the Docker Swarm cluster by setting your first machine as a Swarm Manager. In this case, MDM1 is the ScaleIO API gateway and will be used as the manager to make sure it doesn't get an unexpected workload.
 ```
 $ docker swarm init --advertise-addr 192.168.50.12
 ```
@@ -42,7 +27,6 @@ $ docker swarm init --advertise-addr 192.168.50.12
 ![docker swarm init](img/mc_swarm_01.png "docker swarm init")
 
 The output of this command will display a new command to create Swarm Workers. Copy and paste that command with the unique key to MDM2 and TB.
-
 
 ```
 $ docker swarm join \
@@ -189,11 +173,11 @@ Click on the refresh button and join back in the game to see the inventory has p
 ![failover01](img/mc10.png "failover1")
 ![failover02](img/mc11.png "failover2")
 
-### Contribution
+## Contribution
 
 Create a fork of the project into your own repository. Make all your necessary changes and create a pull request with a description on what was added or removed and details explaining the changes in lines of code. If approved, project owners will merge it.
 
 
-### Support
+## Support
 
 Please file bugs and issues on the GitHub issues page for this project. This is to help keep track and document everything related to this repo. For general discussions and further support you can join the [{code} by Dell EMC Community slack channel](http://community.codedellemc.com/). The code and documentation are released with no warranties or SLAs and are intended to be supported through a community driven process.
