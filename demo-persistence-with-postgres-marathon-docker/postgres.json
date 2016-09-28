@@ -1,0 +1,29 @@
+{
+  "id": "postgres",
+  "instances": 1,
+  "cpus": 0.1,
+  "mem": 32,
+  "container": {
+    "type": "DOCKER",
+    "docker": {
+      "image": "postgres:9.5",
+      "network": "HOST",
+      "forcePullImage": true
+    },
+    "volumes": [
+      {
+        "containerPath": "/var/lib/postgresql/data",
+        "external": {
+          "name": "postgres",
+          "provider": "dvdi",
+          "options": { "dvdi/driver": "rexray" }
+        },
+        "mode": "RW"
+      }
+    ]
+  },
+  "upgradeStrategy": {
+    "minimumHealthCapacity": 0,
+    "maximumOverCapacity": 0
+  }
+}
