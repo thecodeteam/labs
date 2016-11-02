@@ -6,7 +6,8 @@ Watch Marathon do its thang!
 
 - A functional Mesos environment with [Marathon Framework](https://mesosphere.github.io/marathon/). 
   - Examples: 
-    - [3-Node ScaleIO + 3-Node Apache Mesos Cluster with Mesosphere](https://github.com/codedellemc/scaleio-framework/tree/master/demo)
+    - [3-Node ScaleIO + 3-Node Apache Mesos Cluster with Marathon on AWS]
+    (https://github.com/codedellemc/scaleio-framework/tree/master/demo)
 - [REX-Ray must be installed](http://rexray.readthedocs.io/en/latest/) on each node Mesos Agent and [configured with the preemption flag](http://libstorage.readthedocs.io/en/stable/user-guide/config/#volume-configuration)
 - Docker 1.12+ must be installed on each node
 

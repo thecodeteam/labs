@@ -1,18 +1,25 @@
-# {code} Demos
+# {code} Labs
 
 What's the point of having awesome software if you can't show it off?
 
 ## Environment QuickStart
 
-1. [Deploy VirtualBox with Docker Machine and Install REX-Ray](https://github.com/codedellemc/demo/tree/master/setup-virtualbox-dockermachine)
-2. [3-Node ScaleIO Environment Using Vagrant](https://github.com/codedellemc/demo/tree/master/setup-scaleio-vagrant)
-3. [3-Node ScaleIO + 3-Node Apache Mesos Cluster with Mesosphere](https://github.com/codedellemc/scaleio-framework/tree/master/demo)
+1. [Deploy VirtualBox with Docker Machine and Install REX-Ray]
+(https://github.com/codedellemc/labs/tree/master/setup-virtualbox-dockermachine)
+2. [3-Node ScaleIO Environment Using Vagrant]
+(https://github.com/codedellemc/labs/tree/master/setup-scaleio-vagrant)
+3. [3-Node ScaleIO + 3-Node Apache Mesos Cluster with Marathon on AWS]
+(https://github.com/codedellemc/scaleio-framework/tree/master/demo)
 
 ## Application Demo
 
-1. [Storage Persistence with Postgres using REX-Ray](https://github.com/codedellemc/demo/tree/master/demo-persistence-with-postgres-docker)
-2. [Storage Persistence and Failover with Minecraft using REX-Ray and Docker Swarm Mode](https://github.com/codedellemc/demo/tree/master/demo-persistence-with-minecraft-docker)
-3. [Storage Persistence with Postgres using Mesos, Marathon, Docker, and REX-Ray](https://github.com/codedellemc/demo/tree/master/demo-persistence-with-postgres-marathon-docker)
+1. [Storage Persistence with Postgres using REX-Ray](https://github.com/codedellemc/labs/tree/master/demo-persistence-with-postgres-docker)
+2. [Storage Persistence and Failover with Minecraft using REX-Ray and Docker Swarm Mode](https://github.com/codedellemc/labs/tree/master/demo-persistence-with-minecraft-docker)
+3. [Storage Persistence with Postgres using Mesos, Marathon, Docker, and REX-Ray](https://github.com/codedellemc/labs/tree/master/demo-persistence-with-postgres-marathon-docker)
+
+## Video
+
+1. [REX-Ray and Modern Data Persistence - Q3 2016](https://www.youtube.com/watch?v=EnMsUKSsK0s&list=PLbssOJyyvHuWiBQAg9EFWH570timj2fxt&index=2)
 
 ## Guidelines for Contributing a Demo
 
