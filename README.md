@@ -16,6 +16,7 @@ What's the point of having awesome software if you can't show it off?
 1. [Storage Persistence with Postgres using REX-Ray](https://github.com/codedellemc/labs/tree/master/demo-persistence-with-postgres-docker)
 2. [Storage Persistence and Failover with Minecraft using REX-Ray and Docker Swarm Mode](https://github.com/codedellemc/labs/tree/master/demo-persistence-with-minecraft-docker)
 3. [Storage Persistence with Postgres using Mesos, Marathon, Docker, and REX-Ray](https://github.com/codedellemc/labs/tree/master/demo-persistence-with-postgres-marathon-docker)
+4. [Kubernetes with libstorage integration on AWS](https://github.com/codedellemc/labs/tree/master/demo-kubernetes-with-libstorage)
 
 ## Video
 
