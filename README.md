@@ -47,7 +47,8 @@ has key pieces of technology that make them unique.
 3. [Storage Persistence with Postgres using Mesos, Marathon, Docker, and REX-Ray](https://github.com/codedellemc/labs/tree/master/demo-persistence-with-postgres-marathon-docker)
     - Use the supplied application spec for Marathon to deploy a Postgres
     service to Mesos. Use the restart button to redeploy the Postgres service on
-    a new host and see the data persist
+    a new host and see the data persist.
+4. [Kubernetes with libstorage integration on AWS](https://github.com/codedellemc/labs/tree/master/demo-kubernetes-with-libstorage)
 
 ## Video
 
