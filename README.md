@@ -49,6 +49,11 @@ has key pieces of technology that make them unique.
     service to Mesos. Use the restart button to redeploy the Postgres service on
     a new host and see the data persist.
 4. [Kubernetes with libstorage integration on AWS](https://github.com/codedellemc/labs/tree/master/demo-kubernetes-with-libstorage)
+    - Take a test drive with a proposed feature for Kubernetes using libStorage
+    for persistent applications. Start from scratch with the complete setup
+    needed to run a functioning fork of Kubernetes on AWS. Then explore the
+    different types of volume architectures available to Kubernetes pods to
+    persist applications.
 
 ## Video
 
