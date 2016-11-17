@@ -1,6 +1,8 @@
 # {code} Labs
 
-What's the point of having awesome software if you can't show it off?
+![{code} Labs](labs_header.jpg "{code} Labs")
+
+**stateful and persistent applications in containers that work...**
 
 ## Environment QuickStart
 
