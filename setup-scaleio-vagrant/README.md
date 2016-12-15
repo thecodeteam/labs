@@ -14,6 +14,7 @@ The [Vagrant ScaleIO](https://github.com/codedellemc/vagrant/tree/master/scaleio
 ```
 $ git clone https://github.com/codedellemc/vagrant
 $ cd vagrant/scaleio/
+$ vagrant plugin install vagrant-triggers
 $ vagrant up --provider virtualbox
 ```
 
@@ -27,3 +28,15 @@ $ vagrant ssh mdm2
 ...window 3...
 $ vagrant ssh tb
 ```
+
+View more details and tweaking parameters at [Vagrant ScaleIO](https://github.com/codedellemc/vagrant/tree/master/scaleio).
+
+---
+
+## ScaleIO GUI
+
+The ScaleIO GUI is automatically extracted and put into the
+`vagrant/scaleio/gui` directory, run `./run.sh` to start up. Connect
+to your instance at 192.168.50.12 with the credentials `admin` and `Scaleio123`.
+
+![alt text](https://raw.githubusercontent.com/codedellemc/vagrant/master/scaleio/docs/images/scaleio-docker-rexray.png)

@@ -8,15 +8,27 @@ VirtualBox driver for REX-Ray to allow stateful applications to persist data.
 
 ---
 
-1. Start the VirtualBox SOAP API to accept API requests from the REX-Ray
-service. Terminal Window 1:
+1. Install [Docker for Mac](https://docs.docker.com/docker-for-mac/) or [Docker
+for Windows](https://docs.docker.com/docker-for-windows/) so the laptop has the
+local Docker client installed. Install [Docker Machine]
+(https://github.com/docker/machine/releases) to deploy hosts. Check out the instructions on the `releases` tab
+
+2. When using the VirtualBox SOAP API service for the first time, disable
+authentication:
+
+  ```
+  $ VBoxManage setproperty websrvauthlibrary null
+  ```
+
+3. Start the VirtualBox SOAP API to accept API requests from the REX-Ray
+service in a new terminal window:
 
   ```
   $ vboxwebsrv -H 0.0.0.0 -v
   ```
 
-2. Open a second terminal window and follow the command prompts. Change
-`<username>` with your actual username or specify a new path to place VirtualBox
+4. Open a second terminal window and follow the command prompts. **Change
+`<username>`** with your actual username or specify a new path to place VirtualBox
 Volumes. Terminal Window 2:
 
   ```
@@ -50,7 +62,7 @@ Volumes. Terminal Window 2:
   $ docker-machine ssh vbox01 "sudo rexray start" && docker-machine ssh vbox02 "sudo rexray start"
   ```
 
-3. Set your local Docker client to point to your host using the following
+5. Set your local Docker client to point to your host using the following
 commands
 
   ```
