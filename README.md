@@ -23,7 +23,7 @@ has key pieces of technology that make them unique.
     REX-Ray. This gives a fully configured environment ready to test stateful
     applications and clustering functionality using the ScaleIO driver for
     REX-Ray.
-3. [3-Node ScaleIO + 3-Node Apache Mesos Cluster with Marathon on AWS](https://github.com/codedellemc/scaleio-framework/tree/master/demo)
+3. [3-Node ScaleIO + 3-Node Apache Mesos Cluster with Marathon on AWS](http://scaleio-framework.readthedocs.io/en/latest/user-guide/demo/)
     - Use an [AWS Cloudformtion](https://aws.amazon.com/cloudformation/)
     template to deploy two (2) clusters in AWS. The first cluster is a three (3)
     node
