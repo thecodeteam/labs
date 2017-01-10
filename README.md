@@ -26,11 +26,17 @@ has key pieces of technology that make them unique.
 3. [3-Node ScaleIO + 3-Node Apache Mesos Cluster with Marathon on AWS](http://scaleio-framework.readthedocs.io/en/latest/user-guide/demo/)
     - Use an [AWS Cloudformtion](https://aws.amazon.com/cloudformation/)
     template to deploy two (2) clusters in AWS. The first cluster is a three (3)
-    node
-    ScaleIO environment which will be used by REX-Ray as the storage platform. A
-    second cluster is a three (3) node Apache Mesos cluster fully configured
-    with Marathon ready to accept requests for scheduling containers. Follow
-    this with [Application Demo #3](https://github.com/codedellemc/labs/tree/master/demo-persistence-with-postgres-marathon-docker)
+    node ScaleIO environment which will be used by REX-Ray as the storage
+    platform. A second cluster is a three (3) node Apache Mesos cluster fully
+    configured with Marathon ready to accept requests for scheduling containers.
+    Follow this with [Application Demo #3](https://github.com/codedellemc/labs/tree/master/demo-persistence-with-postgres-marathon-docker)
+    - **GO ADVANCED**
+        + Take it to the next level by exploring features of performing a custom
+        ScaleIO configuration and installation. This process will take the
+        existing Mesos Agent Nodes, add additional storage, and install all
+        the SDS components to add more storage to the existing ScaleIO cluster
+        based on your pool and domain configuration settings. Try it at the 
+        [Custom ScaleIO Framework Deployment](https://github.com/codedellemc/labs/tree/master/setup-scaleio-aws-custom)
 
 ## Application Demo
 
