@@ -1,25 +1,24 @@
 # Custom ScaleIO Framework Deployment
 
-This tutorial will allow the resources amongst Mesos Agent compute nodes to be
+This tutorial will allow the resources in Mesos Agent compute nodes to be
 provisioned and included into a ScaleIO cluster. This is accomplished by
 leveraging [Mesos Agent attributes](http://mesos.apache.org/documentation/latest/attributes-resources/) to carve up resources and imprint the configuration that is desired.
 
-These simple directions allows a ScaleIO user the freedom and
-flexibility to map out a configuration without getting into the details of
-installing RPMs or DEBs. If the deployment of a Mesos cluster is using
-configuration management tools such as Puppet, it can be augmented to
-define Mesos Agent attributes so you can turn over the procedural steps to
-ScaleIO deployment to the Framework. Since this is a Mesos Framework, its interface is a simple, stable and well-known interface that insulates users from any ScaleIO changes in packaging, APIs, etc.
-
+These directions allows a ScaleIO user the freedom and flexibility to map out a
+configuration without getting into the details of installing RPMs or DEBs. If
+the deployment of a Mesos cluster is using configuration management tools such
+as Puppet, it can be augmented to define Mesos Agent attributes so you can turn
+over the procedural steps to ScaleIO deployment to the Framework. Since this is
+a Mesos Framework, its interface is a simple, stable and well-known interface
+that insulates users from any ScaleIO changes in packaging, APIs, etc.
 
 ### Deploy the environment via Amazon CloudFormation
 
 1. Follow the directions from [3-Node ScaleIO + 3-Node Apache Mesos Cluster with
 Marathon on AWS](http://scaleio-framework.readthedocs.io/en/latest/user-guide/demo/) but stop at  **Launch Framework**. Remember, this only works in **US-West-1 (aka N.California) region**.
 
-2. Once the CloudFormation template has successfully be deployed and the
-Primary MDM has been identified, you are ready to begin setting
-configurations
+2. Once the CloudFormation template has successfully been deployed and the
+Primary MDM has been identified, begin setting configurations
 
     ```
     $ scli --login --username admin --password F00barbaz
