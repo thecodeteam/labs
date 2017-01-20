@@ -20,7 +20,8 @@ kubectl get deployments
 
 #### Step 2: Install REX-Ray on the master node
 
-Rex-Ray is a storage orchestration tool for container schedulers, including Kubernetes. It can be deployed is centralized or distributed architectures, but we will be using a centralized deployment here. It will be deployed inside a Kubernetes pod. 
+REX-Ray is a storage orchestration tool for container schedulers, including
+Kubernetes. It can be deployed is centralized or distributed architectures, but we will be using a centralized deployment here. It will be deployed inside a Kubernetes pod. 
 
 We will also install an instance of Rex-Ray here on this Kubernetes master node simply to get a command line interface we can use to talk to the central service for some administrative operations.
 

@@ -37,6 +37,18 @@ has key pieces of technology that make them unique.
         the SDS components to add more storage to the existing ScaleIO cluster
         based on your pool and domain configuration settings. Try it at the 
         [Custom ScaleIO Framework Deployment](https://github.com/codedellemc/labs/tree/master/setup-scaleio-aws-custom)
+4. [Kubernetes with libstorage integration on AWS](https://github.com/codedellemc/labs/tree/master/demo-kubernetes-with-libstorage)
+    - Take a test drive with a proposed feature for Kubernetes using libStorage
+    for persistent applications. Start from scratch with the complete setup
+    needed to run a functioning fork of Kubernetes on AWS. Then explore the
+    different types of volume architectures available to Kubernetes pods to
+    persist applications.
+5. [Kubernetes with FlexREX on ScaleIO](https://github.com/codedellemc/labs/tree/master/demo-persistence-with-scaleio-kubernetes)
+    - FlexREX is an implementation of a FlexVolume driver for Kubernetes that
+    enables the entire library of REX-Ray/libStorage supported storage
+    platforms. This lab will expose a different kind of architecture where
+    REX-Ray is deployed as a central controller within a Pod and FlexREX will be
+    installed on the Kubernetes minion nodes.
 
 ## Application Demo
 
@@ -56,12 +68,6 @@ has key pieces of technology that make them unique.
     - Use the supplied application spec for Marathon to deploy a Postgres
     service to Mesos. Use the restart button to redeploy the Postgres service on
     a new host and see the data persist.
-4. [Kubernetes with libstorage integration on AWS](https://github.com/codedellemc/labs/tree/master/demo-kubernetes-with-libstorage)
-    - Take a test drive with a proposed feature for Kubernetes using libStorage
-    for persistent applications. Start from scratch with the complete setup
-    needed to run a functioning fork of Kubernetes on AWS. Then explore the
-    different types of volume architectures available to Kubernetes pods to
-    persist applications.
 
 ## Video
 
