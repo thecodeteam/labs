@@ -6,9 +6,9 @@
 - An installed ScaleIO cluster 
     - can be independent, or converged (Kubernetes minions and ScaleIO co-installed on same hardware)
 
-### Step 1: Establish access to the Kubernetes master node
+### Step 1: Establish Access to the Kubernetes Master Node
 
-ssh into a Kubenetes master instance and test operation with these commands.
+SSH into a Kubenetes master instance and test operations with these commands.
 
 ```
 kubectl cluster-info dump
@@ -18,24 +18,29 @@ kubectl get services
 kubectl get deployments
 ```
 
-#### Step 2: Install REX-Ray on the master node
+#### Step 2: Install REX-Ray on the Master Node
 
 REX-Ray is a storage orchestration tool for container schedulers, including
-Kubernetes. It can be deployed is centralized or distributed architectures, but we will be using a centralized deployment here. It will be deployed inside a Kubernetes pod. 
+Kubernetes. It can be deployed as a centralized or distributed architecture, but
+this lab will use a centralized deployment inside a Kubernetes pod.
 
-We will also install an instance of Rex-Ray here on this Kubernetes master node simply to get a command line interface we can use to talk to the central service for some administrative operations.
+An instance of Rex-Ray needs to be installed on the Kubernetes master node
+simply to get a command line interface used to talk to the central service for
+ administrative operations.
 
-Continue using the ssh session to the Kubernetes master instance from the previous step. 
+Continue using the SSH session to the Kubernetes master instance from the
+previous step.
 
 ```
 curl -sSL https://dl.bintray.com/emccode/rexray/install | sh -s -- stable
 ```
 
-### Step 3: Deploy a REX-Ray controller pod
+### Step 3: Deploy a REX-Ray Controller Pod
 
-Rex-Ray is a storage orchestration tool for container schedulers, including Kubernetes. It can be deployed is centralized or distributed architectures, but we will be using a centralized deployment here. It will be deployed inside a Kubernetes pod.
-
-Define a Rex-Ray controller pod and deployment, using a yaml file. This pod will use a preconfigured RexRay controller image hosted on DockerHub. 
+Define a REX-Ray controller pod and deployment, using a yaml file. This pod will
+use a preconfigured REX-Ray controller image hosted on DockerHub 
+(`cduchesne/rexray-controller:0.7.0`) . Change the
+username, password, and endpoint for your usage
 
 ```
 cat <<EOF >rexraycontroller.yaml
@@ -90,11 +95,11 @@ spec:
         - name: "LIBSTORAGE_SERVER_SERVICES_SCALEIO_DRIVER"
           value: "scaleio"
         - name: "SCALEIO_ENDPOINT"
-          value: "https://scaleio-gateway.default.k8s.democluster.com/api"
+          value: "YOU_ENDPOINT"
         - name: "SCALEIO_INSECURE"
           value: "true"
         - name: "SCALEIO_PASSWORD"
-          value: "sCaleIO2016"
+          value: "ScaleIO123"
           # CHANGE THIS PASSWORD!
         - name: "SCALEIO_PROTECTIONDOMAINNAME"
           value: "default"
@@ -134,19 +139,20 @@ Examine logs to verify Rex-Ray started.
 kubectl logs $RRPOD
 ```
 
-You can test Rex-Ray operation with:
+Test Rex-Ray operation with:
 
-`rexray volume ls -h tcp://10.32.0.11:7979`
+`rexray volume ls -h tcp://<ip address for deployed pod>:7979`
 
-### Step 4: Install the FlexRex plugin on minion nodes.
+### Step 4: Install the FlexRex Plugin on Minion Nodes.
 
-From a root command prompt on each Kubernetes minion node:
+From a root command prompt on each Kubernetes minion node (substitute for IP
+address of REX-Ray controller):
 
 ```
 curl -sSL https://dl.bintray.com/emccode/rexray/install | sh -s — stable
 cat <<EOF > /etc/rexray/config.yml
 libstorage:
-  host: tcp://10.32.0.11:7979
+  host: tcp://<ip address for deployed pod>:7979
   service: scaleio
 EOF
 systemctl start rexray
@@ -156,23 +162,30 @@ systemctl restart kubelet
  
 If you have multiple minions, use of the [tmux](https://tmux.github.io/) tool is recommended to do this efficiently. 
 
-### Step 5: Quick and simple, create a PersistentVolume and utilize it in a pod
+### Step 5: Quick and simple, Create a Persistent Volume and Utilize it in a Pod
 
-Continue using the ssh session to the kubernetes master instance from the previous step.
+One of the effects of using FlexVolume is that it doesn't support the entire
+volume lifecycle. Therefore, new volumes must be manually created. Continue
+using the SSH session to the Kubernetes master instance from the previous step.
 
-`rexray volume create mysql-1 --size=8 -h tcp://10.32.0.11:7979`
+```
+rexray volume create mysql-1 --size=8 -h tcp://<ip address for deployed
+pod>:7979
+```
 
 This should create the result shown below. Creation of the specified volume can be confirmed using the ScaleIO GUI console. 
 
 ```
-admin@ip-172-20-0-9:~$ rexray volume ls -h tcp://10.32.0.11:7979
+admin@ip-172-20-0-9:~$ rexray volume ls -h tcp://<ip address for deployed
+pod>:7979
 ID            Name      Status     Size
 925e649700000000  mysql-1  available  8
 ```
  
-#### Create a pod containing a stateful application which will use the volume.
+#### Create a Pod Containing a Stateful Application
 
-Continue using the ssh session to the kubernetes master. In the home directory, create the file pod.yaml with this content. Observe that using a volume mount in this pod definition *decouples the database's data from the container*.:
+Continue using the SSH session to the kubernetes master. In the home directory,
+create the file `pod.yaml` with this content. Observe that using a volume mount in this pod definition *decouples the database's data from the container*.:
 
 ```
 cat <<EOF >pod.yaml
@@ -232,13 +245,16 @@ A user (application) sees and consumes claims, which hide storage implementation
 
 #### Create an ScaleIO volume
 
-`rexray volume create admin-managed-8g-01 --size=8 -h tcp://10.32.0.11:7979`
+```
+rexray volume create admin-managed-8g-01 --size=8 -h tcp://<ip address for deployed
+pod>:7979
+```
 
 #### Create a Kubernetes PersistentVolume and PersistentVolumeClaim
 
 Create a Kubernetes persistent volume referencing it:
 
-Create the file pv.yaml with this content:
+Create the file `pv.yaml` with this content:
 
 ```
 cat <<EOF >pv.yaml
@@ -263,11 +279,13 @@ spec:
 EOF
 ```
 
-`kubectl create -f pv.yaml`
+```
+kubectl create -f pv.yaml
+```
 
 Create a Kubernetes persistent volume claim:
 
-Create the file pvc.yaml with this content:
+Create the file `pvc.yaml` with this content:
 
 ```
 cat <<EOF >pvc.yaml
@@ -286,11 +304,13 @@ spec:
 EOF
 ```
 
-`kubectl create -f pvc.yaml`
+```
+kubectl create -f pvc.yaml
+```
 
-#### Create a Kubernetes Service, and a Deployment that uses the claim
+#### Create a Kubernetes Service, and a Deployment that uses the Claim
 
-Create the file dep-pvc.yaml with this content:
+Create the file `dep-pvc.yaml` with this content:
 
 ```
 cat <<EOF >dep-pvc.yaml
@@ -350,15 +370,19 @@ EOF
 
 Now use the file to create the service and deployment.
 
-`kubectl create -f dep-pvc.yaml`
+```
+kubectl create -f dep-pvc.yaml
+```
 
-A deployment generates a unique name when it creates a pod. This will lookup the name by label and place it in an environment variable, for convenient reuse later.
+A deployment generates a unique name when it creates a pod. The following
+command will lookup the name by label and place it in an environment variable,
+for convenient reuse later.
 
 ```
 export PGPOD=$(kubectl get pods -l app=postgres-libstorage --no-headers | awk '{print $1}')
 ```
 
-Examine logs to verifiy postgres started. Using an interactive session into the pod's container, create a new database named libstoragedemo.
+Examine logs to verifiy postgres started. Using an interactive session into the pod's container, create a new database named `libstoragedemo`.
 
 ```
 kubectl logs $PGPOD
@@ -372,13 +396,16 @@ exit
 exit
 ```
 
-### Step 7: Engage in Node maintenance to demonstrate migration of a stateful pod to a different cluster host.
+### Step 7: Engage in Node Maintenance to Demonstrate Migration of a Stateful
+Pod to a Different Cluster Host.
 
 This will utilize the PostgreSQL pod created in the previous step.
 
 #### Determine the hosting node
 
-`kubectl get nodes`
+```
+kubectl get nodes
+```
 
 should return a list of all nodes like this:
 
@@ -405,19 +432,26 @@ We will simulate a planned node outage. (In this example we won't evacuate all p
 
 Tell the Kubernetes scheduler to cease directing pods to the node hosting Postgres.
 
-`kubectl cordon $DB_NODE`
+```
+kubectl cordon $DB_NODE
+```
 
 Delete the existing pod. The Deployment will automatically bring up a new replacement pod. It will be deployed on a different node because we cordoned off the existing node.
 
-`kubectl delete pod -l app=postgres-libstorage`
+```
+kubectl delete pod -l app=postgres-libstorage
+```
 
 Verify that the pod has migrated succesfully.
 
-`kubectl describe pods -l app=postgres-libstorage`
+```
+kubectl describe pods -l app=postgres-libstorage
+```
 
 It may take a brief time before the replacement pod shows a "running" status. 
 
-Use an interactive session to verify that the "libstoragedemo" database we created is present:
+Use an interactive session to verify that the `libstoragedemo` database we
+created is present:
 
 ```
 export PGPOD=$(kubectl get pods -l app=postgres-libstorage --no-headers | awk '{print $1}')
@@ -433,7 +467,8 @@ exit
 
 Finally, tell the scheduler to return the node to service 
 
-`kubectl uncordon $DB_NODE`
+```kubectl uncordon $DB_NODE
+```
 
 ### Step 8: Optional: Deploy a StatefulSet 
 
@@ -445,17 +480,20 @@ The storage for a given StatefulSet pod must be based of a storage class or pre-
 
 Deleting and/or scaling a StatefulSet down will not delete the volumes associated with the StatefulSet. This is done to ensure data safety, which is generally more valuable than an automatic purge of all related StatefulSet resources.
 
-#### Pre-provision volumes backed by ScaleIO
+#### Pre-provision Volumes Backed by ScaleIO
 
 ```
-rexray volume create redis-24g-1 --size=24 -h tcp://10.32.0.11:7979
-rexray volume create redis-24g-2 --size=24 -h tcp://10.32.0.11:7979
-rexray volume create redis-24g-3 --size=24 -h tcp://10.32.0.11:7979
+rexray volume create redis-24g-1 --size=24 -h tcp://<ip address for deployed
+pod>:7979
+rexray volume create redis-24g-2 --size=24 -h tcp://<ip address for deployed
+pod>:7979
+rexray volume create redis-24g-3 --size=24 -h tcp://<ip address for deployed
+pod>:7979
 ```
 
 Create Kubernetes persistent volumes referencing it:
 
-Create the file redis-pv.yaml with this content:
+Create the file `redis-pv.yaml` with this content:
 
 ```
 cat <<EOF >redis-pv.yaml
@@ -521,9 +559,11 @@ spec:
 EOF
 ```
 
-`kubectl create -f redis-pv.yaml`
+```
+kubectl create -f redis-pv.yaml
+```
 
-#### Create a Redis cluster StatefulSet with a Headless Service using a Volume Claim
+#### Create a Redis Cluster StatefulSet with a Headless Service using a Volume Claim
 
 ```
 cat <<EOF >redis-ss.yaml
@@ -645,9 +685,11 @@ spec:
 EOF
 ```
 
-`kubectl create -f redis-ss.yaml`
+```
+kubectl create -f redis-ss.yaml
+```
 
-#### Test the redis StatefulSet.
+#### Test the Redis StatefulSet.
 
 ```
 kubectl get ep
@@ -661,7 +703,9 @@ Delete the MySQL server. Deleting the mount automatically unmounts the volume. N
 
 #### Delete MySQL server pod.
 
-`kubectl delete pod mysql`
+```
+kubectl delete pod mysql
+```
 
 Delete the Postgres server service and deployment, which will automatically delete the pod.
 
@@ -678,12 +722,14 @@ kubectl delete pvc pg-data-claim
 
 #### Delete the persistent volume.
 
-`kubectl delete pv small-pv-pool-01`
+```
+kubectl delete pv small-pv-pool-01
+```
 
 #### Delete the ScaleIO volumes.
 
 ```
-rexray volume rm mysql-1 admin-managed-8g-01 -h tcp://10.32.0.11:7979
+rexray volume rm mysql-1 admin-managed-8g-01 -h tcp://<ip address for deployed:7979
 ```
 
 #### If you performed the optional StatefulSet step
@@ -693,7 +739,7 @@ kubectl delete statefulset rd
 kubectl delete service redis
 kubectl delete pvc datadir-rd-0 datadir-rd-1 datadir-rd-2
 kubectl delete pv redis-24g-1 redis-24g-2 redis-24g-3
-rexray volume rm redis-24g-1 redis-24g-2 redis-24g-3 -h tcp://10.32.0.11:7979
+rexray volume rm redis-24g-1 redis-24g-2 redis-24g-3 -h tcp://pod>:7979
 ```
 
 ## Support
