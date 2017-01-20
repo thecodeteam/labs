@@ -21,8 +21,7 @@ kubectl get deployments
 #### Step 2: Install REX-Ray on the Master Node
 
 REX-Ray is a storage orchestration tool for container schedulers, including
-Kubernetes. It can be deployed as a centralized or distributed architecture, but
-this lab will use a centralized deployment inside a Kubernetes pod.
+Kubernetes. It can be deployed as a centralized or distributed architecture, but this lab will use a centralized deployment inside a Kubernetes pod.
 
 An instance of Rex-Ray needs to be installed on the Kubernetes master node
 simply to get a command line interface used to talk to the central service for
@@ -37,9 +36,8 @@ curl -sSL https://dl.bintray.com/emccode/rexray/install | sh -s -- stable
 
 ### Step 3: Deploy a REX-Ray Controller Pod
 
-Define a REX-Ray controller pod and deployment, using a yaml file. This pod will
-use a preconfigured REX-Ray controller image hosted on DockerHub 
-(`cduchesne/rexray-controller:0.7.0`) . Change the
+Define a REX-Ray controller pod and deployment, using a yaml file. This pod will use a preconfigured REX-Ray controller image hosted on DockerHub 
+(`emccode/rexray-controller:0.7.0`) . Change the
 username, password, and endpoint for your usage
 
 ```
@@ -72,7 +70,7 @@ spec:
         app: rexraycontroller
     spec:
       containers:
-      - image: cduchesne/rexray-controller:0.7.0
+      - image: emccode/rexray-controller:0.7.0
         imagePullPolicy: Always
         name: rexraycontroller
         env:
@@ -155,7 +153,6 @@ libstorage:
   host: tcp://<ip address for deployed pod>:7979
   service: scaleio
 EOF
-systemctl start rexray
 rexray flexrex install
 systemctl restart kubelet
 ```
@@ -470,234 +467,7 @@ Finally, tell the scheduler to return the node to service
 ```kubectl uncordon $DB_NODE
 ```
 
-### Step 8: Optional: Deploy a StatefulSet 
-
-There are reports of issues with the features described below. Investigation is in progress but at this time please treat this section as preview documentation for a beta stage feature. 
-
-StatefulSet is a Beta feature in Kubernetes 1.5, so this should be considered as preview, and is not recommended for production usage.
-
-The storage for a given StatefulSet pod must be based of a storage class or pre-provisioned by an admin. Since Flex based storage plugins do not support storage class, we will pre-provision storage for this exercise.
-
-Deleting and/or scaling a StatefulSet down will not delete the volumes associated with the StatefulSet. This is done to ensure data safety, which is generally more valuable than an automatic purge of all related StatefulSet resources.
-
-#### Pre-provision Volumes Backed by ScaleIO
-
-```
-rexray volume create redis-24g-1 --size=24 -h tcp://<ip address for deployed
-pod>:7979
-rexray volume create redis-24g-2 --size=24 -h tcp://<ip address for deployed
-pod>:7979
-rexray volume create redis-24g-3 --size=24 -h tcp://<ip address for deployed
-pod>:7979
-```
-
-Create Kubernetes persistent volumes referencing it:
-
-Create the file `redis-pv.yaml` with this content:
-
-```
-cat <<EOF >redis-pv.yaml
-kind: PersistentVolume
-apiVersion: v1
-metadata:
-  name: redis-24g-1
-  labels:
-    app: redis
-spec:
-  capacity:
-    storage: 24Gi
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  flexVolume:
-    driver: rexray/flexrex
-    fsType: xfs
-    options:
-      volumeID: redis-24g-1
-      forceAttach: "true"
-      forceAttachDelay: "15"
----
-kind: PersistentVolume
-apiVersion: v1
-metadata:
-  name: redis-24g-2
-  labels:
-    app: redis
-spec:
-  capacity:
-    storage: 24Gi
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  flexVolume:
-    driver: rexray/flexrex
-    fsType: xfs
-    options:
-      volumeID: redis-24g-2
-      forceAttach: "true"
-      forceAttachDelay: "15"
----
-kind: PersistentVolume
-apiVersion: v1
-metadata:
-  name: redis-24g-3
-  labels:
-    app: redis
-spec:
-  capacity:
-    storage: 24Gi
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  flexVolume:
-    driver: rexray/flexrex
-    fsType: xfs
-    options:
-      volumeID: redis-24g-3
-      forceAttach: "true"
-      forceAttachDelay: "15"
-EOF
-```
-
-```
-kubectl create -f redis-pv.yaml
-```
-
-#### Create a Redis Cluster StatefulSet with a Headless Service using a Volume Claim
-
-```
-cat <<EOF >redis-ss.yaml
-# A headless service to create DNS records
-apiVersion: v1
-kind: Service
-metadata:
-  annotations:
-    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
-  name: redis
-  labels:
-    app: redis
-spec:
-  ports:
-  - port: 6379
-    name: peer
-  # *.redis.default.svc.cluster.local
-  clusterIP: None
-  selector:
-    app: redis
----
-apiVersion: apps/v1beta1
-kind: StatefulSet
-metadata:
-  name: rd
-spec:
-  serviceName: "redis"
-  replicas: 3
-  template:
-    metadata:
-      labels:
-        app: redis
-      annotations:
-        pod.alpha.kubernetes.io/init-containers: '[
-            {
-                "name": "install",
-                "image": "gcr.io/google_containers/redis-install-3.2.0:e2e",
-                "imagePullPolicy": "Always",
-                "args": ["--install-into=/opt", "--work-dir=/work-dir"],
-                "volumeMounts": [
-                    {
-                        "name": "opt",
-                        "mountPath": "/opt"
-                    },
-                    {
-                        "name": "workdir",
-                        "mountPath": "/work-dir"
-                    }
-                ]
-            },
-            {
-                "name": "bootstrap",
-                "image": "debian:jessie",
-                "command": ["/work-dir/peer-finder"],
-                "args": ["-on-start=\"/work-dir/on-start.sh\"", "-service=redis"],
-                "env": [
-                  {
-                      "name": "POD_NAMESPACE",
-                      "valueFrom": {
-                          "fieldRef": {
-                              "apiVersion": "v1",
-                              "fieldPath": "metadata.namespace"
-                          }
-                      }
-                   }
-                ],
-                "volumeMounts": [
-                    {
-                        "name": "opt",
-                        "mountPath": "/opt"
-                    },
-                    {
-                        "name": "workdir",
-                        "mountPath": "/work-dir"
-                    }
-                ]
-            }
-        ]'
-    spec:
-      containers:
-      - name: redis
-        image: debian:jessie
-        ports:
-        - containerPort: 6379
-          name: peer
-        command:
-        - /opt/redis/redis-server
-        args:
-        - /opt/redis/redis.conf
-        readinessProbe:
-          exec:
-            command:
-            - sh
-            - -c
-            - "/opt/redis/redis-cli -h $(hostname) ping"
-          initialDelaySeconds: 15
-          timeoutSeconds: 5
-        volumeMounts:
-        - name: datadir
-          mountPath: /data
-        - name: opt
-          mountPath: /opt
-      volumes:
-      - name: opt
-        emptyDir: {}
-      - name: workdir
-        emptyDir: {}
-  volumeClaimTemplates:
-  - metadata:
-      name: datadir
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 24Gi
-      selector:
-        matchLabels:
-           app: redis
-EOF
-```
-
-```
-kubectl create -f redis-ss.yaml
-```
-
-#### Test the Redis StatefulSet.
-
-```
-kubectl get ep
-kubectl exec rd-0 -- /opt/redis/redis-cli -h rd-0.redis SET replicated:test true
-kubectl exec rd-2 -- /opt/redis/redis-cli -h rd-2.redis GET replicated:test
-```
-
-### Step 9: Cleanup 
+### Step 8: Cleanup 
 
 Delete the MySQL server. Deleting the mount automatically unmounts the volume. Note that by design, volumes until explicitly removed. Volumes can be reused in another pod - even in a different instance of a Kubernetes cluster.  A volume could even be migrated to a different container scheduler platform such as Mesos.
 
@@ -730,16 +500,6 @@ kubectl delete pv small-pv-pool-01
 
 ```
 rexray volume rm mysql-1 admin-managed-8g-01 -h tcp://<ip address for deployed:7979
-```
-
-#### If you performed the optional StatefulSet step
-
-```
-kubectl delete statefulset rd
-kubectl delete service redis
-kubectl delete pvc datadir-rd-0 datadir-rd-1 datadir-rd-2
-kubectl delete pv redis-24g-1 redis-24g-2 redis-24g-3
-rexray volume rm redis-24g-1 redis-24g-2 redis-24g-3 -h tcp://pod>:7979
 ```
 
 ## Support
