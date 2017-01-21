@@ -372,8 +372,7 @@ kubectl create -f dep-pvc.yaml
 ```
 
 A deployment generates a unique name when it creates a pod. The following
-command will lookup the name by label and place it in an environment variable,
-for convenient reuse later.
+command will lookup the name by label and place it in an environment variable, for convenient reuse later.
 
 ```
 export PGPOD=$(kubectl get pods -l app=postgres-libstorage --no-headers | awk '{print $1}')
@@ -464,7 +463,8 @@ exit
 
 Finally, tell the scheduler to return the node to service 
 
-```kubectl uncordon $DB_NODE
+```
+kubectl uncordon $DB_NODE
 ```
 
 ### Step 8: Cleanup 
