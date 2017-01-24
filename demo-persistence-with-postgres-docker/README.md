@@ -22,12 +22,12 @@ Only one path is necessary for this particular database. Two options can be used
 1. Docker Volume 
 
   ```
-$ docker volume create -d rexray --name pg_data --opt=size=10
+$ docker volume create -d rexray --name pg_data --opt=size=8
   ```
 
 2. REX-Ray CLI
   ```
-$ sudo rexray volume create --volumename pg_data --size=10
+$ sudo rexray volume create --size=8 pg_data 
   ```
 
 All hosts will have access to this volume.
