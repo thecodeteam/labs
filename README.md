@@ -37,18 +37,25 @@ has key pieces of technology that make them unique.
         the SDS components to add more storage to the existing ScaleIO cluster
         based on your pool and domain configuration settings. Try it at the 
         [Custom ScaleIO Framework Deployment](https://github.com/codedellemc/labs/tree/master/setup-scaleio-aws-custom)
-4. [Kubernetes with libstorage integration on AWS](https://github.com/codedellemc/labs/tree/master/demo-kubernetes-with-libstorage)
-    - Take a test drive with a proposed feature for Kubernetes using libStorage
-    for persistent applications. Start from scratch with the complete setup
-    needed to run a functioning fork of Kubernetes on AWS. Then explore the
-    different types of volume architectures available to Kubernetes pods to
-    persist applications.
-5. [Kubernetes with FlexREX on ScaleIO](https://github.com/codedellemc/labs/tree/master/demo-persistence-with-scaleio-kubernetes)
-    - FlexREX is an implementation of a FlexVolume driver for Kubernetes that
-    enables the entire library of REX-Ray/libStorage supported storage
-    platforms. This lab will expose a different kind of architecture where
-    REX-Ray is deployed as a central controller within a Pod and FlexREX will be
-    installed on the Kubernetes minion nodes.
+4. [Deploy a 3-Node Ceph Environment Using Vagrant](https://github.com/codedellemc/vagrant/tree/master/ceph)
+    - This Vagrant environment uses VirtualBox and Virtual Media as storage for
+    Ceph to be consumed by REX-Ray along with Docker as the container runtime. This can be used as a quick way to get started working with Ceph and
+    REX-Ray. The hosts will automatically install and configure Docker Engine
+    with REX-Ray to provide a fully configured environment ready to test
+    stateful applications.
+5. Kubernetes
+    - [Kubernetes with FlexREX on ScaleIO](https://github.com/codedellemc/labs/tree/master/demo-persistence-with-scaleio-kubernetes)
+        + FlexREX is an implementation of a FlexVolume driver for Kubernetes
+        that enables the entire library of REX-Ray/libStorage supported storage
+        platforms. This lab will expose a different kind of architecture where
+        REX-Ray is deployed as a central controller within a Pod and FlexREX
+        will be installed on the Kubernetes minion nodes.
+    - [Kubernetes with libstorage integration on AWS](https://github.com/codedellemc/labs/tree/master/demo-kubernetes-with-libstorage)
+        + Take a test drive with a proposed feature for Kubernetes using
+        libStorage for persistent applications. Start from scratch with the
+        complete setup needed to run a functioning fork of Kubernetes on AWS.
+        Then explore the different types of volume architectures available to
+        Kubernetes pods to persist applications. 
 
 ## Application Demo
 
@@ -68,6 +75,12 @@ has key pieces of technology that make them unique.
     - Use the supplied application spec for Marathon to deploy a Postgres
     service to Mesos. Use the restart button to redeploy the Postgres service on
     a new host and see the data persist.
+4. [Storage Persistence with MySQL Persistent Volumes and Persistent Volume
+Claims with Kubernetes Pods and REX-Ray (FlexREX)](https://github.com/codedellemc/labs/tree/master/demo-persistence-with-scaleio-kubernetes#step-5-quick-and-simple-create-a-persistent-volume-and-utilize-it-in-a-pod)
+    - Learn how to use MySQL with a Persistent Volume in a Kubernetes Pod. Go
+    through all the steps for manually creating the volume, creating the
+    persistent volume claim, and attaching it to the pod. This will also
+    demonstrate how to do a migration of the MySQL Pod from one host to another.
 
 ## Video
 
