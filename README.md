@@ -55,7 +55,15 @@ has key pieces of technology that make them unique.
         libStorage for persistent applications. Start from scratch with the
         complete setup needed to run a functioning fork of Kubernetes on AWS.
         Then explore the different types of volume architectures available to
-        Kubernetes pods to persist applications. 
+        Kubernetes pods to persist applications.
+6. [Deploy AWS EC2 Host with Docker Machine and Install REX-Ray with Docker 1.13
+Managed Plugin](https://github.com/codedellemc/labs/tree/master/setup-awsec2-docker-plugin)
+**EXPERIMENTAL** 
+    - Use [Docker Machine](https://github.com/docker/machine) to deploy an AWS
+    EC2 host that is installed and configured with the latest and stable Docker
+    Engine. Follow the directions to install REX-Ray using the Docker 1.13
+    Managed Plugin System. This environment will use AWS EC2 along with EBS
+    driver for REX-Ray to allow stateful applications to persist data.
 
 ## Application Demo
 
