@@ -1,0 +1,3026 @@
+  {
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Conditions": {
+      "CreateLogResources": {
+        "Fn::Equals": [
+          {
+            "Ref": "EnableCloudWatchLogs"
+          },
+          "yes"
+        ]
+      },
+      "HasOnly2AZs": {
+        "Fn::Equals": [
+          {
+            "Fn::FindInMap": [
+              "AWSRegion2AZ",
+              {
+                "Ref": "AWS::Region"
+              },
+              "NumAZs"
+            ]
+          },
+          "2"
+        ]
+      }
+    },
+    "Description": "Docker for AWS 1.13.0 (1)",
+    "Mappings": {
+      "AWSInstanceType2Arch": {
+        "c3.2xlarge": {
+          "Arch": "HVM64"
+        },
+        "c3.4xlarge": {
+          "Arch": "HVM64"
+        },
+        "c3.8xlarge": {
+          "Arch": "HVM64"
+        },
+        "c3.large": {
+          "Arch": "HVM64"
+        },
+        "c3.xlarge": {
+          "Arch": "HVM64"
+        },
+        "c4.2xlarge": {
+          "Arch": "HVM64"
+        },
+        "c4.4xlarge": {
+          "Arch": "HVM64"
+        },
+        "c4.8xlarge": {
+          "Arch": "HVM64"
+        },
+        "c4.large": {
+          "Arch": "HVM64"
+        },
+        "c4.xlarge": {
+          "Arch": "HVM64"
+        },
+        "cc2.8xlarge": {
+          "Arch": "HVM64"
+        },
+        "cr1.8xlarge": {
+          "Arch": "HVM64"
+        },
+        "d2.2xlarge": {
+          "Arch": "HVM64"
+        },
+        "d2.4xlarge": {
+          "Arch": "HVM64"
+        },
+        "d2.8xlarge": {
+          "Arch": "HVM64"
+        },
+        "d2.xlarge": {
+          "Arch": "HVM64"
+        },
+        "g2.2xlarge": {
+          "Arch": "HVMG2"
+        },
+        "hi1.4xlarge": {
+          "Arch": "HVM64"
+        },
+        "hs1.8xlarge": {
+          "Arch": "HVM64"
+        },
+        "i2.2xlarge": {
+          "Arch": "HVM64"
+        },
+        "i2.4xlarge": {
+          "Arch": "HVM64"
+        },
+        "i2.8xlarge": {
+          "Arch": "HVM64"
+        },
+        "i2.xlarge": {
+          "Arch": "HVM64"
+        },
+        "m3.2xlarge": {
+          "Arch": "HVM64"
+        },
+        "m3.large": {
+          "Arch": "HVM64"
+        },
+        "m3.medium": {
+          "Arch": "HVM64"
+        },
+        "m3.xlarge": {
+          "Arch": "HVM64"
+        },
+        "m4.10xlarge": {
+          "Arch": "HVM64"
+        },
+        "m4.2xlarge": {
+          "Arch": "HVM64"
+        },
+        "m4.4xlarge": {
+          "Arch": "HVM64"
+        },
+        "m4.large": {
+          "Arch": "HVM64"
+        },
+        "m4.xlarge": {
+          "Arch": "HVM64"
+        },
+        "r3.2xlarge": {
+          "Arch": "HVM64"
+        },
+        "r3.4xlarge": {
+          "Arch": "HVM64"
+        },
+        "r3.8xlarge": {
+          "Arch": "HVM64"
+        },
+        "r3.large": {
+          "Arch": "HVM64"
+        },
+        "r3.xlarge": {
+          "Arch": "HVM64"
+        },
+        "t2.2xlarge": {
+          "Arch": "HVM64"
+        },
+        "t2.large": {
+          "Arch": "HVM64"
+        },
+        "t2.medium": {
+          "Arch": "HVM64"
+        },
+        "t2.micro": {
+          "Arch": "HVM64"
+        },
+        "t2.small": {
+          "Arch": "HVM64"
+        },
+        "t2.xlarge": {
+          "Arch": "HVM64"
+        }
+      },
+      "AWSRegion2AZ": {
+        "ap-northeast-1": {
+          "AZ0": "0",
+          "AZ1": "1",
+          "AZ2": "0",
+          "Name": "Tokyo",
+          "NumAZs": "2"
+        },
+        "ap-northeast-2": {
+          "AZ0": "0",
+          "AZ1": "1",
+          "AZ2": "0",
+          "Name": "Seoul",
+          "NumAZs": "2"
+        },
+        "ap-south-1": {
+          "AZ0": "0",
+          "AZ1": "1",
+          "AZ2": "0",
+          "Name": "Mumbai",
+          "NumAZs": "2"
+        },
+        "ap-southeast-1": {
+          "AZ0": "0",
+          "AZ1": "1",
+          "AZ2": "0",
+          "Name": "Singapore",
+          "NumAZs": "2"
+        },
+        "ap-southeast-2": {
+          "AZ0": "0",
+          "AZ1": "1",
+          "AZ2": "2",
+          "Name": "Sydney",
+          "NumAZs": "3"
+        },
+        "ca-central-1": {
+          "AZ0": "0",
+          "AZ1": "1",
+          "AZ2": "0",
+          "Name": "Central",
+          "NumAZs": "2"
+        },
+        "eu-central-1": {
+          "AZ0": "0",
+          "AZ1": "1",
+          "AZ2": "0",
+          "Name": "Frankfurt",
+          "NumAZs": "2"
+        },
+        "eu-west-1": {
+          "AZ0": "0",
+          "AZ1": "1",
+          "AZ2": "2",
+          "Name": "Ireland",
+          "NumAZs": "3"
+        },
+        "eu-west-2": {
+          "AZ0": "0",
+          "AZ1": "1",
+          "AZ2": "0",
+          "Name": "London",
+          "NumAZs": "2"
+        },
+        "sa-east-1": {
+          "AZ0": "0",
+          "AZ1": "1",
+          "AZ2": "2",
+          "Name": "Sao Paulo",
+          "NumAZs": "3"
+        },
+        "us-east-1": {
+          "AZ0": "0",
+          "AZ1": "1",
+          "AZ2": "2",
+          "Name": "N. Virgina",
+          "NumAZs": "4"
+        },
+        "us-east-2": {
+          "AZ0": "0",
+          "AZ1": "1",
+          "AZ2": "2",
+          "Name": "Ohio",
+          "NumAZs": "3"
+        },
+        "us-west-1": {
+          "AZ0": "0",
+          "AZ1": "1",
+          "AZ2": "0",
+          "Name": "N. California",
+          "NumAZs": "2"
+        },
+        "us-west-2": {
+          "AZ0": "0",
+          "AZ1": "1",
+          "AZ2": "2",
+          "Name": "Oregon",
+          "NumAZs": "3"
+        }
+      },
+      "AWSRegionArch2AMI": {
+        "ap-northeast-1": {
+          "HVM64": "ami-9c6f11fb",
+          "HVMG2": "NOT_SUPPORTED"
+        },
+        "ap-northeast-2": {
+          "HVM64": "ami-d6a170b8",
+          "HVMG2": "NOT_SUPPORTED"
+        },
+        "ap-south-1": {
+          "HVM64": "ami-2bf18744",
+          "HVMG2": "NOT_SUPPORTED"
+        },
+        "ap-southeast-1": {
+          "HVM64": "ami-fbe84298",
+          "HVMG2": "NOT_SUPPORTED"
+        },
+        "ap-southeast-2": {
+          "HVM64": "ami-b1d9ddd2",
+          "HVMG2": "NOT_SUPPORTED"
+        },
+        "ca-central-1": {
+          "HVM64": "ami-e9f74a8d",
+          "HVMG2": "NOT_SUPPORTED"
+        },
+        "eu-central-1": {
+          "HVM64": "ami-3860ac57",
+          "HVMG2": "NOT_SUPPORTED"
+        },
+        "eu-west-1": {
+          "HVM64": "ami-61281c12",
+          "HVMG2": "NOT_SUPPORTED"
+        },
+        "eu-west-2": {
+          "HVM64": "ami-879c96e3",
+          "HVMG2": "NOT_SUPPORTED"
+        },
+        "sa-east-1": {
+          "HVM64": "ami-d42bb1b8",
+          "HVMG2": "NOT_SUPPORTED"
+        },
+        "us-east-1": {
+          "HVM64": "ami-3f9a7329",
+          "HVMG2": "NOT_SUPPORTED"
+        },
+        "us-east-2": {
+          "HVM64": "ami-a74065c2",
+          "HVMG2": "NOT_SUPPORTED"
+        },
+        "us-west-1": {
+          "HVM64": "ami-36fba856",
+          "HVMG2": "NOT_SUPPORTED"
+        },
+        "us-west-2": {
+          "HVM64": "ami-0c7cc06c",
+          "HVMG2": "NOT_SUPPORTED"
+        }
+      },
+      "DockerForAWS": {
+        "version": {
+          "docker": "1.13.0",
+          "forAws": "aws-v1.13.0-1"
+        }
+      },
+      "VpcCidrs": {
+        "pubsubnet1": {
+          "cidr": "172.31.0.0/20"
+        },
+        "pubsubnet2": {
+          "cidr": "172.31.16.0/20"
+        },
+        "pubsubnet3": {
+          "cidr": "172.31.32.0/20"
+        },
+        "pubsubnet4": {
+          "cidr": "172.31.48.0/20"
+        },
+        "vpc": {
+          "cidr": "172.31.0.0/16"
+        }
+      }
+    },
+    "Metadata": {
+      "AWS::CloudFormation::Interface": {
+        "ParameterGroups": [
+          {
+            "Label": {
+              "default": "Swarm Size"
+            },
+            "Parameters": [
+              "ManagerSize",
+              "ClusterSize"
+            ]
+          },
+          {
+            "Label": {
+              "default": "Swarm Properties"
+            },
+            "Parameters": [
+              "KeyName",
+              "EnableSystemPrune",
+              "EnableCloudWatchLogs"
+            ]
+          },
+          {
+            "Label": {
+              "default": "Swarm Manager Properties"
+            },
+            "Parameters": [
+              "ManagerInstanceType",
+              "ManagerDiskSize",
+              "ManagerDiskType"
+            ]
+          },
+          {
+            "Label": {
+              "default": "Swarm Worker Properties"
+            },
+            "Parameters": [
+              "InstanceType",
+              "WorkerDiskSize",
+              "WorkerDiskType"
+            ]
+          }
+        ],
+        "ParameterLabels": {
+          "ClusterSize": {
+            "default": "Number of Swarm worker nodes?"
+          },
+          "EnableCloudWatchLogs": {
+            "default": "Use Cloudwatch for container logging?"
+          },
+          "EnableSystemPrune": {
+            "default": "Enable daily resource cleanup?"
+          },
+          "InstanceType": {
+            "default": "Agent worker instance type?"
+          },
+          "KeyName": {
+            "default": "Which SSH key to use?"
+          },
+          "ManagerDiskSize": {
+            "default": "Manager ephemeral storage volume size?"
+          },
+          "ManagerDiskType": {
+            "default": "Manager ephemeral storage volume type"
+          },
+          "ManagerInstanceType": {
+            "default": "Swarm manager instance type?"
+          },
+          "ManagerSize": {
+            "default": "Number of Swarm managers?"
+          },
+          "WorkerDiskSize": {
+            "default": "Worker ephemeral storage volume size?"
+          },
+          "WorkerDiskType": {
+            "default": "Worker ephemeral storage volume type"
+          }
+        }
+      },
+      "AWS::CloudFormation::Designer": {
+        "4a840d92-f007-4bbc-b20f-519b11274153": {
+          "size": {
+            "width": 690,
+            "height": 600
+          },
+          "position": {
+            "x": 60,
+            "y": 90
+          },
+          "z": 1,
+          "embeds": [
+            "12f73288-13a7-4a2c-b421-58119f62f6fd",
+            "863d327a-72b0-4bd0-83c8-70c20d4ccc1f",
+            "44c5a16c-a3f2-4b6d-9bae-bd47a745dcc0",
+            "dc61390b-bea1-41ae-8a4f-7c4c9ede0d40",
+            "3c2ed225-335b-4dcf-b751-14223ecb70fc",
+            "e1ea806e-dff3-4d2c-be40-c6cfd981ddf5",
+            "ec2ed10e-c05b-44e4-82f8-bc52db00da93",
+            "3fc21fac-436a-4340-a84d-25f6496a2519"
+          ]
+        },
+        "12f73288-13a7-4a2c-b421-58119f62f6fd": {
+          "size": {
+            "width": 60,
+            "height": 60
+          },
+          "position": {
+            "x": 600,
+            "y": 150
+          },
+          "z": 2,
+          "parent": "4a840d92-f007-4bbc-b20f-519b11274153",
+          "embeds": [],
+          "dependson": [
+            "4a840d92-f007-4bbc-b20f-519b11274153"
+          ]
+        },
+        "d9f68008-7512-4e8a-99c4-e95b9fdef3d2": {
+          "size": {
+            "width": 60,
+            "height": 60
+          },
+          "position": {
+            "x": 810,
+            "y": 90
+          },
+          "z": 1,
+          "embeds": []
+        },
+        "2453a498-3140-4c39-93e2-09a1323bf5e8": {
+          "size": {
+            "width": 60,
+            "height": 60
+          },
+          "position": {
+            "x": 810,
+            "y": 210
+          },
+          "z": 1,
+          "embeds": []
+        },
+        "863d327a-72b0-4bd0-83c8-70c20d4ccc1f": {
+          "size": {
+            "width": 240,
+            "height": 240
+          },
+          "position": {
+            "x": 90,
+            "y": 150
+          },
+          "z": 2,
+          "parent": "4a840d92-f007-4bbc-b20f-519b11274153",
+          "embeds": [
+            "007344c2-5377-416c-bd5e-e43c03a81705"
+          ],
+          "dependson": [
+            "4a840d92-f007-4bbc-b20f-519b11274153"
+          ]
+        },
+        "44c5a16c-a3f2-4b6d-9bae-bd47a745dcc0": {
+          "size": {
+            "width": 150,
+            "height": 150
+          },
+          "position": {
+            "x": 90,
+            "y": 450
+          },
+          "z": 2,
+          "parent": "4a840d92-f007-4bbc-b20f-519b11274153",
+          "embeds": [],
+          "dependson": [
+            "4a840d92-f007-4bbc-b20f-519b11274153"
+          ]
+        },
+        "dc61390b-bea1-41ae-8a4f-7c4c9ede0d40": {
+          "size": {
+            "width": 150,
+            "height": 150
+          },
+          "position": {
+            "x": 390,
+            "y": 360
+          },
+          "z": 2,
+          "parent": "4a840d92-f007-4bbc-b20f-519b11274153",
+          "embeds": [],
+          "dependson": [
+            "4a840d92-f007-4bbc-b20f-519b11274153"
+          ]
+        },
+        "3c2ed225-335b-4dcf-b751-14223ecb70fc": {
+          "size": {
+            "width": 150,
+            "height": 150
+          },
+          "position": {
+            "x": 390,
+            "y": 150
+          },
+          "z": 2,
+          "parent": "4a840d92-f007-4bbc-b20f-519b11274153",
+          "embeds": [],
+          "dependson": [
+            "4a840d92-f007-4bbc-b20f-519b11274153"
+          ]
+        },
+        "210586cb-ad57-41d1-8cfa-55e97dec7469": {
+          "source": {
+            "id": "863d327a-72b0-4bd0-83c8-70c20d4ccc1f"
+          },
+          "target": {
+            "id": "44c5a16c-a3f2-4b6d-9bae-bd47a745dcc0"
+          },
+          "z": 2
+        },
+        "5fef0b09-e488-4320-9f42-560e482820a8": {
+          "source": {
+            "id": "863d327a-72b0-4bd0-83c8-70c20d4ccc1f"
+          },
+          "target": {
+            "id": "dc61390b-bea1-41ae-8a4f-7c4c9ede0d40"
+          },
+          "z": 2
+        },
+        "81a1b0af-609f-4ce7-8a91-02485c13ff40": {
+          "source": {
+            "id": "863d327a-72b0-4bd0-83c8-70c20d4ccc1f"
+          },
+          "target": {
+            "id": "3c2ed225-335b-4dcf-b751-14223ecb70fc"
+          },
+          "z": 2
+        },
+        "f7794626-4522-4717-811f-994853680647": {
+          "size": {
+            "width": 60,
+            "height": 60
+          },
+          "position": {
+            "x": 810,
+            "y": 330
+          },
+          "z": 1,
+          "embeds": []
+        },
+        "7905d493-acb4-47fa-85a3-8b69de1dc0d4": {
+          "size": {
+            "width": 60,
+            "height": 60
+          },
+          "position": {
+            "x": 810,
+            "y": 450
+          },
+          "z": 1,
+          "embeds": [],
+          "isassociatedwith": [
+            "f7794626-4522-4717-811f-994853680647"
+          ],
+          "dependson": [
+            "f7794626-4522-4717-811f-994853680647",
+            "2453a498-3140-4c39-93e2-09a1323bf5e8"
+          ],
+          "isrelatedto": [
+            "2453a498-3140-4c39-93e2-09a1323bf5e8"
+          ]
+        },
+        "f33e9dfc-0955-435a-9541-a74763e79afe": {
+          "size": {
+            "width": 60,
+            "height": 60
+          },
+          "position": {
+            "x": 810,
+            "y": 570
+          },
+          "z": 1,
+          "embeds": [],
+          "isassociatedwith": [
+            "f7794626-4522-4717-811f-994853680647"
+          ],
+          "dependson": [
+            "f7794626-4522-4717-811f-994853680647",
+            "d9f68008-7512-4e8a-99c4-e95b9fdef3d2"
+          ],
+          "isrelatedto": [
+            "d9f68008-7512-4e8a-99c4-e95b9fdef3d2"
+          ]
+        },
+        "a143a7ef-e67c-46fa-9753-7a211651b88f": {
+          "size": {
+            "width": 60,
+            "height": 60
+          },
+          "position": {
+            "x": 810,
+            "y": 690
+          },
+          "z": 1,
+          "embeds": [],
+          "isassociatedwith": [
+            "f7794626-4522-4717-811f-994853680647"
+          ]
+        },
+        "47ffdfa5-2a4b-4ca8-8b25-4e02cc1b74ca": {
+          "size": {
+            "width": 60,
+            "height": 60
+          },
+          "position": {
+            "x": 270,
+            "y": 750
+          },
+          "z": 1,
+          "embeds": [],
+          "isassociatedwith": [
+            "f7794626-4522-4717-811f-994853680647"
+          ],
+          "dependson": [
+            "f7794626-4522-4717-811f-994853680647"
+          ]
+        },
+        "ea757d6d-d297-4f65-96c9-ce89a7cf9ea1": {
+          "size": {
+            "width": 60,
+            "height": 60
+          },
+          "position": {
+            "x": 390,
+            "y": 750
+          },
+          "z": 1,
+          "embeds": [],
+          "isassociatedwith": [
+            "f7794626-4522-4717-811f-994853680647"
+          ]
+        },
+        "83f2d0ff-55f5-478a-aebd-26e099d7be50": {
+          "size": {
+            "width": 60,
+            "height": 60
+          },
+          "position": {
+            "x": 510,
+            "y": 750
+          },
+          "z": 1,
+          "embeds": [],
+          "isassociatedwith": [
+            "f7794626-4522-4717-811f-994853680647"
+          ]
+        },
+        "e1ea806e-dff3-4d2c-be40-c6cfd981ddf5": {
+          "size": {
+            "width": 60,
+            "height": 60
+          },
+          "position": {
+            "x": 600,
+            "y": 270
+          },
+          "z": 2,
+          "parent": "4a840d92-f007-4bbc-b20f-519b11274153",
+          "embeds": [],
+          "dependson": [
+            "4a840d92-f007-4bbc-b20f-519b11274153"
+          ]
+        },
+        "ec2ed10e-c05b-44e4-82f8-bc52db00da93": {
+          "size": {
+            "width": 60,
+            "height": 60
+          },
+          "position": {
+            "x": 600,
+            "y": 390
+          },
+          "z": 2,
+          "parent": "4a840d92-f007-4bbc-b20f-519b11274153",
+          "embeds": [],
+          "dependson": [
+            "e1ea806e-dff3-4d2c-be40-c6cfd981ddf5"
+          ],
+          "isrelatedto": [
+            "e1ea806e-dff3-4d2c-be40-c6cfd981ddf5"
+          ]
+        },
+        "e83bde04-e8df-4ca4-a901-052b18af72d6": {
+          "size": {
+            "width": 60,
+            "height": 60
+          },
+          "position": {
+            "x": 630,
+            "y": 750
+          },
+          "z": 1,
+          "embeds": [],
+          "dependson": [
+            "4a840d92-f007-4bbc-b20f-519b11274153"
+          ]
+        },
+        "3fc21fac-436a-4340-a84d-25f6496a2519": {
+          "size": {
+            "width": 60,
+            "height": 60
+          },
+          "position": {
+            "x": 600,
+            "y": 510
+          },
+          "z": 2,
+          "parent": "4a840d92-f007-4bbc-b20f-519b11274153",
+          "embeds": [],
+          "dependson": [
+            "4a840d92-f007-4bbc-b20f-519b11274153"
+          ]
+        },
+        "6428343e-a5b8-4367-960f-3f10fb2a5cfc": {
+          "size": {
+            "width": 150,
+            "height": 150
+          },
+          "position": {
+            "x": 60,
+            "y": 750
+          },
+          "z": 1,
+          "embeds": []
+        },
+        "e3488e9d-648a-418e-acd5-720a1cbcd706": {
+          "source": {
+            "id": "e83bde04-e8df-4ca4-a901-052b18af72d6"
+          },
+          "target": {
+            "id": "4a840d92-f007-4bbc-b20f-519b11274153"
+          },
+          "z": 1
+        },
+        "007344c2-5377-416c-bd5e-e43c03a81705": {
+          "size": {
+            "width": 60,
+            "height": 60
+          },
+          "position": {
+            "x": 120,
+            "y": 210
+          },
+          "z": 3,
+          "parent": "863d327a-72b0-4bd0-83c8-70c20d4ccc1f",
+          "embeds": [],
+          "references": [
+            "e83bde04-e8df-4ca4-a901-052b18af72d6"
+          ],
+          "dependson": [
+            "e3488e9d-648a-418e-acd5-720a1cbcd706",
+            "863d327a-72b0-4bd0-83c8-70c20d4ccc1f"
+          ]
+        },
+        "a804fdb7-21b6-47df-bcfa-2696bbf4d4da": {
+          "size": {
+            "width": 60,
+            "height": 60
+          },
+          "position": {
+            "x": 750,
+            "y": 810
+          },
+          "z": 1,
+          "embeds": [],
+          "isconnectedto": [
+            "3c2ed225-335b-4dcf-b751-14223ecb70fc",
+            "dc61390b-bea1-41ae-8a4f-7c4c9ede0d40",
+            "44c5a16c-a3f2-4b6d-9bae-bd47a745dcc0"
+          ],
+          "ismemberof": [
+            "3fc21fac-436a-4340-a84d-25f6496a2519"
+          ],
+          "dependson": [
+            "e3488e9d-648a-418e-acd5-720a1cbcd706",
+            "3fc21fac-436a-4340-a84d-25f6496a2519",
+            "3c2ed225-335b-4dcf-b751-14223ecb70fc",
+            "dc61390b-bea1-41ae-8a4f-7c4c9ede0d40",
+            "44c5a16c-a3f2-4b6d-9bae-bd47a745dcc0"
+          ]
+        },
+        "dead670d-68ca-45a6-bb3f-e12c85d7bd38": {
+          "size": {
+            "width": 60,
+            "height": 60
+          },
+          "position": {
+            "x": 930,
+            "y": 90
+          },
+          "z": 1,
+          "embeds": [],
+          "dependson": [
+            "a804fdb7-21b6-47df-bcfa-2696bbf4d4da"
+          ]
+        },
+        "3cb28f62-bf37-4a52-b9db-644e25c6aa77": {
+          "size": {
+            "width": 60,
+            "height": 60
+          },
+          "position": {
+            "x": 930,
+            "y": 210
+          },
+          "z": 1,
+          "embeds": [],
+          "isassociatedwith": [
+            "f7794626-4522-4717-811f-994853680647"
+          ],
+          "dependson": [
+            "f7794626-4522-4717-811f-994853680647",
+            "dead670d-68ca-45a6-bb3f-e12c85d7bd38"
+          ],
+          "isrelatedto": [
+            "dead670d-68ca-45a6-bb3f-e12c85d7bd38"
+          ]
+        },
+        "7a6074f8-ae88-449a-b7f7-5a82817605fa": {
+          "size": {
+            "width": 60,
+            "height": 60
+          },
+          "position": {
+            "x": 930,
+            "y": 330
+          },
+          "z": 1,
+          "embeds": [],
+          "ismemberof": [
+            "ec2ed10e-c05b-44e4-82f8-bc52db00da93",
+            "12f73288-13a7-4a2c-b421-58119f62f6fd"
+          ],
+          "dependson": [
+            "a804fdb7-21b6-47df-bcfa-2696bbf4d4da"
+          ],
+          "isrelatedto": [
+            "83f2d0ff-55f5-478a-aebd-26e099d7be50",
+            "a804fdb7-21b6-47df-bcfa-2696bbf4d4da",
+            "e1ea806e-dff3-4d2c-be40-c6cfd981ddf5",
+            "dead670d-68ca-45a6-bb3f-e12c85d7bd38",
+            "4a840d92-f007-4bbc-b20f-519b11274153",
+            "2453a498-3140-4c39-93e2-09a1323bf5e8",
+            "d9f68008-7512-4e8a-99c4-e95b9fdef3d2"
+          ]
+        },
+        "e92c9b90-8c50-4039-b8a6-a0194a38d12d": {
+          "size": {
+            "width": 60,
+            "height": 60
+          },
+          "position": {
+            "x": 930,
+            "y": 450
+          },
+          "z": 1,
+          "embeds": [],
+          "isconnectedto": [
+            "a804fdb7-21b6-47df-bcfa-2696bbf4d4da",
+            "3c2ed225-335b-4dcf-b751-14223ecb70fc"
+          ],
+          "isassociatedwith": [
+            "7a6074f8-ae88-449a-b7f7-5a82817605fa"
+          ],
+          "dependson": [
+            "dead670d-68ca-45a6-bb3f-e12c85d7bd38",
+            "3c2ed225-335b-4dcf-b751-14223ecb70fc",
+            "dc61390b-bea1-41ae-8a4f-7c4c9ede0d40",
+            "44c5a16c-a3f2-4b6d-9bae-bd47a745dcc0",
+            "a804fdb7-21b6-47df-bcfa-2696bbf4d4da"
+          ],
+          "isrelatedto": [
+            "3c2ed225-335b-4dcf-b751-14223ecb70fc",
+            "dc61390b-bea1-41ae-8a4f-7c4c9ede0d40",
+            "44c5a16c-a3f2-4b6d-9bae-bd47a745dcc0"
+          ]
+        },
+        "3cd48135-9100-4ead-beff-e40adcbadf90": {
+          "size": {
+            "width": 60,
+            "height": 60
+          },
+          "position": {
+            "x": 930,
+            "y": 570
+          },
+          "z": 1,
+          "embeds": [],
+          "isassociatedwith": [
+            "e92c9b90-8c50-4039-b8a6-a0194a38d12d"
+          ],
+          "references": [
+            "2453a498-3140-4c39-93e2-09a1323bf5e8"
+          ],
+          "dependson": [
+            "2453a498-3140-4c39-93e2-09a1323bf5e8"
+          ],
+          "isrelatedto": [
+            "f7794626-4522-4717-811f-994853680647"
+          ]
+        },
+        "7310bf67-8960-4425-84a5-13cb84cd4184": {
+          "size": {
+            "width": 60,
+            "height": 60
+          },
+          "position": {
+            "x": 930,
+            "y": 690
+          },
+          "z": 1,
+          "embeds": [],
+          "ismemberof": [
+            "e1ea806e-dff3-4d2c-be40-c6cfd981ddf5"
+          ],
+          "dependson": [
+            "e92c9b90-8c50-4039-b8a6-a0194a38d12d"
+          ],
+          "isrelatedto": [
+            "83f2d0ff-55f5-478a-aebd-26e099d7be50",
+            "dead670d-68ca-45a6-bb3f-e12c85d7bd38",
+            "4a840d92-f007-4bbc-b20f-519b11274153",
+            "2453a498-3140-4c39-93e2-09a1323bf5e8",
+            "d9f68008-7512-4e8a-99c4-e95b9fdef3d2"
+          ]
+        },
+        "6501083d-0054-43d0-8370-3b8b55faabf6": {
+          "size": {
+            "width": 60,
+            "height": 60
+          },
+          "position": {
+            "x": 870,
+            "y": 810
+          },
+          "z": 1,
+          "embeds": [],
+          "isconnectedto": [
+            "a804fdb7-21b6-47df-bcfa-2696bbf4d4da",
+            "3c2ed225-335b-4dcf-b751-14223ecb70fc"
+          ],
+          "isassociatedwith": [
+            "7310bf67-8960-4425-84a5-13cb84cd4184"
+          ],
+          "dependson": [
+            "e92c9b90-8c50-4039-b8a6-a0194a38d12d"
+          ],
+          "isrelatedto": [
+            "3c2ed225-335b-4dcf-b751-14223ecb70fc",
+            "dc61390b-bea1-41ae-8a4f-7c4c9ede0d40",
+            "44c5a16c-a3f2-4b6d-9bae-bd47a745dcc0"
+          ]
+        },
+        "2b46678b-3a17-473a-bf3f-3d74fef288e9": {
+          "size": {
+            "width": 60,
+            "height": 60
+          },
+          "position": {
+            "x": 270,
+            "y": 870
+          },
+          "z": 1,
+          "embeds": [],
+          "isassociatedwith": [
+            "6501083d-0054-43d0-8370-3b8b55faabf6"
+          ],
+          "references": [
+            "2453a498-3140-4c39-93e2-09a1323bf5e8"
+          ],
+          "dependson": [
+            "2453a498-3140-4c39-93e2-09a1323bf5e8"
+          ],
+          "isrelatedto": [
+            "f7794626-4522-4717-811f-994853680647"
+          ]
+        },
+        "fbf9e09d-b18f-4a61-8619-ea82bcd10ade": {
+          "size": {
+            "width": 60,
+            "height": 60
+          },
+          "position": {
+            "x": -50.36467560286793,
+            "y": 757.4228615986381
+          },
+          "z": 0,
+          "embeds": [],
+          "isassociatedwith": [
+            "f7794626-4522-4717-811f-994853680647"
+          ]
+        }
+      }
+    },
+    "Outputs": {
+      "DefaultDNSTarget": {
+        "Description": "Use this name to update your DNS records",
+        "Value": {
+          "Fn::GetAtt": [
+            "ExternalLoadBalancer",
+            "DNSName"
+          ]
+        }
+      },
+      "Managers": {
+        "Description": "You can see the manager nodes associated with this cluster here.  Follow the instructions here: https://beta.docker.com/docs/deploy/",
+        "Value": {
+          "Fn::Join": [
+            "",
+            [
+              "https://",
+              {
+                "Ref": "AWS::Region"
+              },
+              ".console.aws.amazon.com/ec2/v2/home?region=",
+              {
+                "Ref": "AWS::Region"
+              },
+              "#Instances:tag:aws:autoscaling:groupName=",
+              {
+                "Ref": "ManagerAsg"
+              },
+              ";sort=desc:dnsName"
+            ]
+          ]
+        }
+      },
+      "ZoneAvailabilityComment": {
+        "Description": "Availabilty Zones Comment",
+        "Value": {
+          "Fn::If": [
+            "HasOnly2AZs",
+            "This region only has 2 Availabiliy Zones (AZ). If one of those AZs goes away, it will cause problems for your Swarm Managers. Please use a Region with at least 3 AZs.",
+            "This region has at least 3 Availability Zones (AZ). This is ideal to ensure a fully functional Swarm in case you lose an AZ."
+          ]
+        }
+      }
+    },
+    "Parameters": {
+      "ClusterSize": {
+        "Default": "5",
+        "Description": "Number of worker nodes in the Swarm (0-1000).",
+        "MaxValue": "1000",
+        "MinValue": "0",
+        "Type": "Number"
+      },
+      "EnableCloudWatchLogs": {
+        "AllowedValues": [
+          "no",
+          "yes"
+        ],
+        "Default": "yes",
+        "Description": "Send all Container logs to CloudWatch",
+        "Type": "String"
+      },
+      "EnableSystemPrune": {
+        "AllowedValues": [
+          "no",
+          "yes"
+        ],
+        "Default": "no",
+        "Description": "Cleans up unused images, containers, networks and volumes",
+        "Type": "String"
+      },
+      "InstanceType": {
+        "AllowedValues": [
+          "t2.micro",
+          "t2.small",
+          "t2.medium",
+          "t2.large",
+          "t2.xlarge",
+          "t2.2xlarge",
+          "m4.large",
+          "m4.xlarge",
+          "m4.2xlarge",
+          "m4.4xlarge",
+          "m4.10xlarge",
+          "m3.medium",
+          "m3.large",
+          "m3.xlarge",
+          "m3.2xlarge",
+          "c4.large",
+          "c4.xlarge",
+          "c4.2xlarge",
+          "c4.4xlarge",
+          "c4.8xlarge",
+          "c3.large",
+          "c3.xlarge",
+          "c3.2xlarge",
+          "c3.4xlarge",
+          "c3.8xlarge",
+          "r3.large",
+          "r3.xlarge",
+          "r3.2xlarge",
+          "r3.4xlarge",
+          "r3.8xlarge",
+          "i2.xlarge",
+          "i2.2xlarge",
+          "i2.4xlarge",
+          "i2.8xlarge"
+        ],
+        "ConstraintDescription": "Must be a valid EC2 HVM instance type.",
+        "Default": "t2.micro",
+        "Description": "EC2 HVM instance type (t2.micro, m3.medium, etc).",
+        "Type": "String"
+      },
+      "KeyName": {
+        "ConstraintDescription": "must be the name of an existing EC2 KeyPair.",
+        "Description": "Name of an existing EC2 KeyPair to enable SSH access to the instances",
+        "MinLength": "1",
+        "Type": "AWS::EC2::KeyPair::KeyName"
+      },
+      "ManagerDiskSize": {
+        "Default": "20",
+        "Description": "Size of Manager's ephemeral storage volume in GiB",
+        "MaxValue": "1024",
+        "MinValue": "20",
+        "Type": "Number"
+      },
+      "ManagerDiskType": {
+        "AllowedValues": [
+          "standard",
+          "gp2"
+        ],
+        "Default": "standard",
+        "Description": "Manager ephemeral storage volume type",
+        "Type": "String"
+      },
+      "ManagerInstanceType": {
+        "AllowedValues": [
+          "t2.micro",
+          "t2.small",
+          "t2.medium",
+          "t2.large",
+          "t2.xlarge",
+          "t2.2xlarge",
+          "m4.large",
+          "m4.xlarge",
+          "m4.2xlarge",
+          "m4.4xlarge",
+          "m4.10xlarge",
+          "m3.medium",
+          "m3.large",
+          "m3.xlarge",
+          "m3.2xlarge",
+          "c4.large",
+          "c4.xlarge",
+          "c4.2xlarge",
+          "c4.4xlarge",
+          "c4.8xlarge",
+          "c3.large",
+          "c3.xlarge",
+          "c3.2xlarge",
+          "c3.4xlarge",
+          "c3.8xlarge",
+          "r3.large",
+          "r3.xlarge",
+          "r3.2xlarge",
+          "r3.4xlarge",
+          "r3.8xlarge",
+          "i2.xlarge",
+          "i2.2xlarge",
+          "i2.4xlarge",
+          "i2.8xlarge"
+        ],
+        "ConstraintDescription": "Must be a valid EC2 HVM instance type.",
+        "Default": "t2.micro",
+        "Description": "EC2 HVM instance type (t2.micro, m3.medium, etc).",
+        "Type": "String"
+      },
+      "ManagerSize": {
+        "AllowedValues": [
+          "1",
+          "3",
+          "5"
+        ],
+        "Default": "3",
+        "Description": "Number of Swarm manager nodes (1, 3, 5)",
+        "Type": "Number"
+      },
+      "WorkerDiskSize": {
+        "Default": "20",
+        "Description": "Size of Workers's ephemeral storage volume in GiB",
+        "MaxValue": "1024",
+        "MinValue": "20",
+        "Type": "Number"
+      },
+      "WorkerDiskType": {
+        "AllowedValues": [
+          "standard",
+          "gp2"
+        ],
+        "Default": "standard",
+        "Description": "Worker ephemeral storage volume type",
+        "Type": "String"
+      }
+    },
+    "Resources": {
+      "AttachGateway": {
+        "DependsOn": [
+          "Vpc",
+          "InternetGateway"
+        ],
+        "Properties": {
+          "InternetGatewayId": {
+            "Ref": "InternetGateway"
+          },
+          "VpcId": {
+            "Ref": "Vpc"
+          }
+        },
+        "Type": "AWS::EC2::VPCGatewayAttachment",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "e3488e9d-648a-418e-acd5-720a1cbcd706"
+          }
+        }
+      },
+      "DockerLogGroup": {
+        "Condition": "CreateLogResources",
+        "Properties": {
+          "LogGroupName": {
+            "Fn::Join": [
+              "-",
+              [
+                {
+                  "Ref": "AWS::StackName"
+                },
+                "lg"
+              ]
+            ]
+          },
+          "RetentionInDays": 7
+        },
+        "Type": "AWS::Logs::LogGroup",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "6428343e-a5b8-4367-960f-3f10fb2a5cfc"
+          }
+        }
+      },
+      "DynDBPolicies": {
+        "DependsOn": [
+          "ProxyRole",
+          "SwarmDynDBTable"
+        ],
+        "Properties": {
+          "PolicyDocument": {
+            "Statement": [
+              {
+                "Action": [
+                  "dynamodb:PutItem",
+                  "dynamodb:DeleteItem",
+                  "dynamodb:GetItem",
+                  "dynamodb:UpdateItem",
+                  "dynamodb:Query"
+                ],
+                "Effect": "Allow",
+                "Resource": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:dynamodb:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":table/",
+                      {
+                        "Ref": "SwarmDynDBTable"
+                      }
+                    ]
+                  ]
+                }
+              }
+            ],
+            "Version": "2012-10-17"
+          },
+          "PolicyName": "dyndb-getput",
+          "Roles": [
+            {
+              "Ref": "ProxyRole"
+            }
+          ]
+        },
+        "Type": "AWS::IAM::Policy",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "3cb28f62-bf37-4a52-b9db-644e25c6aa77"
+          }
+        }
+      },
+      "ExternalLoadBalancer": {
+        "DependsOn": [
+          "AttachGateway",
+          "ExternalLoadBalancerSG",
+          "PubSubnetAz1",
+          "PubSubnetAz2",
+          "PubSubnetAz3"
+        ],
+        "Properties": {
+          "ConnectionSettings": {
+            "IdleTimeout": "600"
+          },
+          "CrossZone": "true",
+          "HealthCheck": {
+            "HealthyThreshold": "2",
+            "Interval": "10",
+            "Target": "HTTP:44554/",
+            "Timeout": "2",
+            "UnhealthyThreshold": "4"
+          },
+          "Listeners": [
+            {
+              "InstancePort": "7",
+              "LoadBalancerPort": "7",
+              "Protocol": "TCP"
+            }
+          ],
+          "LoadBalancerName": {
+            "Fn::Join": [
+              "-",
+              [
+                {
+                  "Ref": "AWS::StackName"
+                },
+                "ELB"
+              ]
+            ]
+          },
+          "SecurityGroups": [
+            {
+              "Ref": "ExternalLoadBalancerSG"
+            }
+          ],
+          "Subnets": {
+            "Fn::If": [
+              "HasOnly2AZs",
+              [
+                {
+                  "Ref": "PubSubnetAz1"
+                },
+                {
+                  "Ref": "PubSubnetAz2"
+                }
+              ],
+              [
+                {
+                  "Ref": "PubSubnetAz1"
+                },
+                {
+                  "Ref": "PubSubnetAz2"
+                },
+                {
+                  "Ref": "PubSubnetAz3"
+                }
+              ]
+            ]
+          },
+          "Tags": [
+            {
+              "Key": "Name",
+              "Value": {
+                "Fn::Join": [
+                  "-",
+                  [
+                    {
+                      "Ref": "AWS::StackName"
+                    },
+                    "ELB"
+                  ]
+                ]
+              }
+            }
+          ]
+        },
+        "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "a804fdb7-21b6-47df-bcfa-2696bbf4d4da"
+          }
+        }
+      },
+      "ExternalLoadBalancerSG": {
+        "DependsOn": "Vpc",
+        "Properties": {
+          "GroupDescription": "External Load Balancer SecurityGroup",
+          "SecurityGroupIngress": [
+            {
+              "CidrIp": "0.0.0.0/0",
+              "FromPort": "0",
+              "IpProtocol": "-1",
+              "ToPort": "65535"
+            }
+          ],
+          "VpcId": {
+            "Ref": "Vpc"
+          }
+        },
+        "Type": "AWS::EC2::SecurityGroup",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "3fc21fac-436a-4340-a84d-25f6496a2519"
+          }
+        }
+      },
+      "InternetGateway": {
+        "DependsOn": "Vpc",
+        "Properties": {
+          "Tags": [
+            {
+              "Key": "Name",
+              "Value": {
+                "Fn::Join": [
+                  "-",
+                  [
+                    {
+                      "Ref": "AWS::StackName"
+                    },
+                    "IGW"
+                  ]
+                ]
+              }
+            }
+          ]
+        },
+        "Type": "AWS::EC2::InternetGateway",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "e83bde04-e8df-4ca4-a901-052b18af72d6"
+          }
+        }
+      },
+      "ManagerAsg": {
+        "CreationPolicy": {
+          "ResourceSignal": {
+            "Count": {
+              "Ref": "ManagerSize"
+            },
+            "Timeout": "PT20M"
+          }
+        },
+        "DependsOn": [
+          "SwarmDynDBTable",
+          "PubSubnetAz1",
+          "PubSubnetAz2",
+          "PubSubnetAz3",
+          "ExternalLoadBalancer"
+        ],
+        "Properties": {
+          "DesiredCapacity": {
+            "Ref": "ManagerSize"
+          },
+          "HealthCheckGracePeriod": "300",
+          "HealthCheckType": "ELB",
+          "LaunchConfigurationName": {
+            "Ref": "ManagerLaunchConfig1"
+          },
+          "LoadBalancerNames": [
+            {
+              "Ref": "ExternalLoadBalancer"
+            }
+          ],
+          "MaxSize": "5",
+          "MinSize": "0",
+          "Tags": [
+            {
+              "Key": "Name",
+              "PropagateAtLaunch": "true",
+              "Value": {
+                "Fn::Join": [
+                  "-",
+                  [
+                    {
+                      "Ref": "AWS::StackName"
+                    },
+                    "Manager"
+                  ]
+                ]
+              }
+            },
+            {
+              "Key": "swarm-node-type",
+              "PropagateAtLaunch": "true",
+              "Value": "manager"
+            },
+            {
+              "Key": "swarm-stack-id",
+              "PropagateAtLaunch": "true",
+              "Value": {
+                "Ref": "AWS::StackId"
+              }
+            },
+            {
+              "Key": "DOCKER_FOR_AWS_VERSION",
+              "PropagateAtLaunch": "true",
+              "Value": {
+                "Fn::FindInMap": [
+                  "DockerForAWS",
+                  "version",
+                  "forAws"
+                ]
+              }
+            },
+            {
+              "Key": "DOCKER_VERSION",
+              "PropagateAtLaunch": "true",
+              "Value": {
+                "Fn::FindInMap": [
+                  "DockerForAWS",
+                  "version",
+                  "docker"
+                ]
+              }
+            }
+          ],
+          "VPCZoneIdentifier": [
+            {
+              "Fn::If": [
+                "HasOnly2AZs",
+                {
+                  "Fn::Join": [
+                    ",",
+                    [
+                      {
+                        "Ref": "PubSubnetAz1"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    ",",
+                    [
+                      {
+                        "Ref": "PubSubnetAz1"
+                      }
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "Type": "AWS::AutoScaling::AutoScalingGroup",
+        "UpdatePolicy": {
+          "AutoScalingRollingUpdate": {
+            "MaxBatchSize": "1",
+            "MinInstancesInService": {
+              "Ref": "ManagerSize"
+            },
+            "PauseTime": "PT20M",
+            "WaitOnResourceSignals": "true"
+          }
+        },
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "e92c9b90-8c50-4039-b8a6-a0194a38d12d"
+          }
+        }
+      },
+      "ManagerLaunchConfig1": {
+        "DependsOn": "ExternalLoadBalancer",
+        "Properties": {
+          "AssociatePublicIpAddress": "true",
+          "BlockDeviceMappings": [
+            {
+              "DeviceName": "/dev/xvdb",
+              "Ebs": {
+                "VolumeSize": {
+                  "Ref": "ManagerDiskSize"
+                },
+                "VolumeType": {
+                  "Ref": "ManagerDiskType"
+                }
+              }
+            }
+          ],
+          "IamInstanceProfile": {
+            "Ref": "ProxyInstanceProfile"
+          },
+          "ImageId": {
+            "Fn::FindInMap": [
+              "AWSRegionArch2AMI",
+              {
+                "Ref": "AWS::Region"
+              },
+              {
+                "Fn::FindInMap": [
+                  "AWSInstanceType2Arch",
+                  {
+                    "Ref": "ManagerInstanceType"
+                  },
+                  "Arch"
+                ]
+              }
+            ]
+          },
+          "InstanceType": {
+            "Ref": "ManagerInstanceType"
+          },
+          "KeyName": {
+            "Ref": "KeyName"
+          },
+          "SecurityGroups": [
+            {
+              "Ref": "ManagerVpcSG"
+            },
+            {
+              "Ref": "SwarmWideSG"
+            }
+          ],
+          "UserData": {
+            "Fn::Base64": {
+              "Fn::Join": [
+                "",
+                [
+                  "#!/bin/sh\n",
+                  "echo \"",
+                  {
+                    "Ref": "ExternalLoadBalancer"
+                  },
+                  "\" > /var/lib/docker/swarm/lb_name\n",
+                  "echo \"# hostname : ELB_name\" >> /var/lib/docker/swarm/elb.config\n",
+                  "echo \"127.0.0.1: ",
+                  {
+                    "Ref": "ExternalLoadBalancer"
+                  },
+                  "\" >> /var/lib/docker/swarm/elb.config\n",
+                  "echo \"localhost: ",
+                  {
+                    "Ref": "ExternalLoadBalancer"
+                  },
+                  "\" >> /var/lib/docker/swarm/elb.config\n",
+                  "echo \"default: ",
+                  {
+                    "Ref": "ExternalLoadBalancer"
+                  },
+                  "\" >> /var/lib/docker/swarm/elb.config\n",
+                  "export DOCKER_FOR_IAAS_VERSION='",
+                  {
+                    "Fn::FindInMap": [
+                      "DockerForAWS",
+                      "version",
+                      "forAws"
+                    ]
+                  },
+                  "'\n",
+                  "export LOCAL_IP=$(wget -qO- http://169.254.169.254/latest/meta-data/local-ipv4)\n",
+                  "export ENABLE_CLOUDWATCH_LOGS='",
+                  {
+                    "Ref": "EnableCloudWatchLogs"
+                  },
+                  "'\n",
+                  "if [ $ENABLE_CLOUDWATCH_LOGS == 'yes' ] ; then \n",
+                  "echo '{\"experimental\": true, \"log-driver\": \"awslogs\",\"log-opts\": {\"awslogs-group\":\"",
+                  {
+                    "Fn::Join": [
+                      "-",
+                      [
+                        {
+                          "Ref": "AWS::StackName"
+                        },
+                        "lg"
+                      ]
+                    ]
+                  },
+                  "\", \"tag\": \"{{.Name}}-{{.ID}}\" }}' > /etc/docker/daemon.json \n",
+                  "else\n",
+                  "echo '{\"experimental\": true }' > /etc/docker/daemon.json \n",
+                  "fi\n",
+                  "chown -R docker /home/docker/\n",
+                  "chgrp -R docker /home/docker/\n",
+                  "rc-service docker restart\n",
+                  "sleep 5\n",
+                  "docker run --label com.docker.editions.system --log-driver=json-file --name=meta-aws --restart=always -d -p $LOCAL_IP:9024:8080 ",
+                  "-e AWS_REGION='",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  "' ",
+                  "-e MANAGER_SECURITY_GROUP_ID='",
+                  {
+                    "Ref": "ManagerVpcSG"
+                  },
+                  "' ",
+                  "-e WORKER_SECURITY_GROUP_ID='",
+                  {
+                    "Ref": "NodeVpcSG"
+                  },
+                  "' ",
+                  "-v /var/run/docker.sock:/var/run/docker.sock ",
+                  "docker4x/meta-aws:$DOCKER_FOR_IAAS_VERSION metaserver -flavor=aws\n",
+                  "docker run --label com.docker.editions.system --log-driver=json-file --restart=no -d ",
+                  "-e DYNAMODB_TABLE='",
+                  {
+                    "Ref": "SwarmDynDBTable"
+                  },
+                  "' ",
+                  "-e NODE_TYPE='manager' ",
+                  "-e REGION='",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  "' ",
+                  "-e STACK_NAME='",
+                  {
+                    "Ref": "AWS::StackName"
+                  },
+                  "' ",
+                  "-e STACK_ID='",
+                  {
+                    "Ref": "AWS::StackId"
+                  },
+                  "' ",
+                  "-e ACCOUNT_ID='",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  "' ",
+                  "-e INSTANCE_NAME='ManagerAsg' ",
+                  "-e DOCKER_FOR_IAAS_VERSION=$DOCKER_FOR_IAAS_VERSION ",
+                  "-v /var/run/docker.sock:/var/run/docker.sock ",
+                  "-v /usr/bin/docker:/usr/bin/docker ",
+                  "-v /var/log:/var/log ",
+                  "docker4x/init-aws:$DOCKER_FOR_IAAS_VERSION\n",
+                  "docker run --label com.docker.editions.system --log-driver=json-file --name=guide-aws --restart=always -d ",
+                  "-e DYNAMODB_TABLE='",
+                  {
+                    "Ref": "SwarmDynDBTable"
+                  },
+                  "' ",
+                  "-e NODE_TYPE='manager' ",
+                  "-e REGION='",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  "' ",
+                  "-e STACK_NAME='",
+                  {
+                    "Ref": "AWS::StackName"
+                  },
+                  "' ",
+                  "-e INSTANCE_NAME='ManagerAsg' ",
+                  "-e VPC_ID='",
+                  {
+                    "Ref": "Vpc"
+                  },
+                  "' ",
+                  "-e STACK_ID='",
+                  {
+                    "Ref": "AWS::StackId"
+                  },
+                  "' ",
+                  "-e ACCOUNT_ID='",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  "' ",
+                  "-e SWARM_QUEUE='",
+                  {
+                    "Ref": "SwarmSQS"
+                  },
+                  "' ",
+                  "-e CLEANUP_QUEUE='",
+                  {
+                    "Ref": "SwarmSQSCleanup"
+                  },
+                  "' ",
+                  "-e RUN_VACUUM='",
+                  {
+                    "Ref": "EnableSystemPrune"
+                  },
+                  "' ",
+                  "-e DOCKER_FOR_IAAS_VERSION=$DOCKER_FOR_IAAS_VERSION ",
+                  "-v /var/run/docker.sock:/var/run/docker.sock ",
+                  "-v /usr/bin/docker:/usr/bin/docker ",
+                  "docker4x/guide-aws:$DOCKER_FOR_IAAS_VERSION\n",
+                  "docker volume create --name sshkey\n",
+                  "docker run --label com.docker.editions.system --log-driver=json-file -ti --rm ",
+                  "--user root ",
+                  "-v sshkey:/etc/ssh ",
+                  "--entrypoint ssh-keygen ",
+                  "docker4x/shell-aws:$DOCKER_FOR_IAAS_VERSION ",
+                  "-A\n",
+                  "docker run --label com.docker.editions.system --log-driver=json-file --name=shell-aws --restart=always -d -p 22:22 ",
+                  "-v /home/docker/:/home/docker/ ",
+                  "-v /var/run/docker.sock:/var/run/docker.sock ",
+                  "-v /var/lib/docker/swarm/lb_name:/var/lib/docker/swarm/lb_name:ro ",
+                  "-v /var/lib/docker/swarm/elb.config:/var/lib/docker/swarm/elb.config ",
+                  "-v /usr/bin/docker:/usr/bin/docker ",
+                  "-v /var/log:/var/log ",
+                  "-v sshkey:/etc/ssh ",
+                  "-v /etc/passwd:/etc/passwd:ro ",
+                  "-v /etc/shadow:/etc/shadow:ro ",
+                  "-v /etc/group:/etc/group:ro ",
+                  "docker4x/shell-aws:$DOCKER_FOR_IAAS_VERSION\n",
+                  "docker run --label com.docker.editions.system --log-driver=json-file --name=l4controller-aws --restart=always -d ",
+                  "-v /var/run/docker.sock:/var/run/docker.sock ",
+                  "-v /var/lib/docker/swarm:/var/lib/docker/swarm ",
+                  "docker4x/l4controller-aws:$DOCKER_FOR_IAAS_VERSION run --log=4 --all=true\n",
+                  "yes | docker plugin install rexray/ebs REXRAY_PREEMPT=true EBS_SECRETKEY=\"\" EBS_ACCESSKEY=\"\"\n"
+                ]
+              ]
+            }
+          }
+        },
+        "Type": "AWS::AutoScaling::LaunchConfiguration",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "7a6074f8-ae88-449a-b7f7-5a82817605fa"
+          }
+        }
+      },
+      "ManagerVpcSG": {
+        "DependsOn": "NodeVpcSG",
+        "Properties": {
+          "GroupDescription": "Manager SecurityGroup",
+          "SecurityGroupIngress": [
+            {
+              "CidrIp": "0.0.0.0/0",
+              "FromPort": "22",
+              "IpProtocol": "tcp",
+              "ToPort": "22"
+            },
+            {
+              "FromPort": "2377",
+              "IpProtocol": "tcp",
+              "SourceSecurityGroupId": {
+                "Fn::GetAtt": [
+                  "NodeVpcSG",
+                  "GroupId"
+                ]
+              },
+              "ToPort": "2377"
+            },
+            {
+              "FromPort": "4789",
+              "IpProtocol": "udp",
+              "SourceSecurityGroupId": {
+                "Fn::GetAtt": [
+                  "NodeVpcSG",
+                  "GroupId"
+                ]
+              },
+              "ToPort": "4789"
+            },
+            {
+              "FromPort": "7946",
+              "IpProtocol": "tcp",
+              "SourceSecurityGroupId": {
+                "Fn::GetAtt": [
+                  "NodeVpcSG",
+                  "GroupId"
+                ]
+              },
+              "ToPort": "7946"
+            },
+            {
+              "FromPort": "7946",
+              "IpProtocol": "udp",
+              "SourceSecurityGroupId": {
+                "Fn::GetAtt": [
+                  "NodeVpcSG",
+                  "GroupId"
+                ]
+              },
+              "ToPort": "7946"
+            }
+          ],
+          "VpcId": {
+            "Ref": "Vpc"
+          }
+        },
+        "Type": "AWS::EC2::SecurityGroup",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "ec2ed10e-c05b-44e4-82f8-bc52db00da93"
+          }
+        }
+      },
+      "NodeAsg": {
+        "CreationPolicy": {
+          "ResourceSignal": {
+            "Count": {
+              "Ref": "ClusterSize"
+            },
+            "Timeout": "PT2H"
+          }
+        },
+        "DependsOn": "ManagerAsg",
+        "Properties": {
+          "DesiredCapacity": {
+            "Ref": "ClusterSize"
+          },
+          "HealthCheckGracePeriod": "300",
+          "HealthCheckType": "ELB",
+          "LaunchConfigurationName": {
+            "Ref": "NodeLaunchConfig1"
+          },
+          "LoadBalancerNames": [
+            {
+              "Ref": "ExternalLoadBalancer"
+            }
+          ],
+          "MaxSize": "1000",
+          "MinSize": "0",
+          "Tags": [
+            {
+              "Key": "Name",
+              "PropagateAtLaunch": "true",
+              "Value": {
+                "Fn::Join": [
+                  "-",
+                  [
+                    {
+                      "Ref": "AWS::StackName"
+                    },
+                    "worker"
+                  ]
+                ]
+              }
+            },
+            {
+              "Key": "swarm-node-type",
+              "PropagateAtLaunch": "true",
+              "Value": "worker"
+            },
+            {
+              "Key": "swarm-stack-id",
+              "PropagateAtLaunch": "true",
+              "Value": {
+                "Ref": "AWS::StackId"
+              }
+            },
+            {
+              "Key": "DOCKER_FOR_AWS_VERSION",
+              "PropagateAtLaunch": "true",
+              "Value": {
+                "Fn::FindInMap": [
+                  "DockerForAWS",
+                  "version",
+                  "forAws"
+                ]
+              }
+            },
+            {
+              "Key": "DOCKER_VERSION",
+              "PropagateAtLaunch": "true",
+              "Value": {
+                "Fn::FindInMap": [
+                  "DockerForAWS",
+                  "version",
+                  "docker"
+                ]
+              }
+            }
+          ],
+          "VPCZoneIdentifier": [
+            {
+              "Fn::If": [
+                "HasOnly2AZs",
+                {
+                  "Fn::Join": [
+                    ",",
+                    [
+                      {
+                        "Ref": "PubSubnetAz1"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    ",",
+                    [
+                      {
+                        "Ref": "PubSubnetAz1"
+                      }
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "Type": "AWS::AutoScaling::AutoScalingGroup",
+        "UpdatePolicy": {
+          "AutoScalingRollingUpdate": {
+            "MaxBatchSize": "1",
+            "MinInstancesInService": {
+              "Ref": "ClusterSize"
+            },
+            "PauseTime": "PT1H",
+            "WaitOnResourceSignals": "true"
+          }
+        },
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "6501083d-0054-43d0-8370-3b8b55faabf6"
+          }
+        }
+      },
+      "NodeLaunchConfig1": {
+        "DependsOn": "ManagerAsg",
+        "Properties": {
+          "AssociatePublicIpAddress": "true",
+          "BlockDeviceMappings": [
+            {
+              "DeviceName": "/dev/xvdb",
+              "Ebs": {
+                "VolumeSize": {
+                  "Ref": "WorkerDiskSize"
+                },
+                "VolumeType": {
+                  "Ref": "WorkerDiskType"
+                }
+              }
+            }
+          ],
+          "IamInstanceProfile": {
+            "Ref": "ProxyInstanceProfile"
+          },
+          "ImageId": {
+            "Fn::FindInMap": [
+              "AWSRegionArch2AMI",
+              {
+                "Ref": "AWS::Region"
+              },
+              {
+                "Fn::FindInMap": [
+                  "AWSInstanceType2Arch",
+                  {
+                    "Ref": "InstanceType"
+                  },
+                  "Arch"
+                ]
+              }
+            ]
+          },
+          "InstanceType": {
+            "Ref": "InstanceType"
+          },
+          "KeyName": {
+            "Ref": "KeyName"
+          },
+          "SecurityGroups": [
+            {
+              "Ref": "NodeVpcSG"
+            }
+          ],
+          "UserData": {
+            "Fn::Base64": {
+              "Fn::Join": [
+                "",
+                [
+                  "#!/bin/sh\n",
+                  "export DOCKER_FOR_IAAS_VERSION='",
+                  {
+                    "Fn::FindInMap": [
+                      "DockerForAWS",
+                      "version",
+                      "forAws"
+                    ]
+                  },
+                  "'\n",
+                  "export ENABLE_CLOUDWATCH_LOGS='",
+                  {
+                    "Ref": "EnableCloudWatchLogs"
+                  },
+                  "'\n",
+                  "if [ $ENABLE_CLOUDWATCH_LOGS == 'yes' ] ; then \n",
+                  "echo '{\"experimental\": true, \"log-driver\": \"awslogs\",\"log-opts\": {\"awslogs-group\":\"",
+                  {
+                    "Fn::Join": [
+                      "-",
+                      [
+                        {
+                          "Ref": "AWS::StackName"
+                        },
+                        "lg"
+                      ]
+                    ]
+                  },
+                  "\", \"tag\": \"{{.Name}}-{{.ID}}\" }}' > /etc/docker/daemon.json \n",
+                  "else\n",
+                  "echo '{\"experimental\": true }' > /etc/docker/daemon.json \n",
+                  "fi\n",
+                  "chown -R docker /home/docker/\n",
+                  "chgrp -R docker /home/docker/\n",
+                  "rc-service docker restart\n",
+                  "sleep 5\n",
+                  "docker run --label com.docker.editions.system --log-driver=json-file --restart=no -d ",
+                  "-e DYNAMODB_TABLE='",
+                  {
+                    "Ref": "SwarmDynDBTable"
+                  },
+                  "' ",
+                  "-e NODE_TYPE='worker' ",
+                  "-e REGION='",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  "' ",
+                  "-e STACK_NAME='",
+                  {
+                    "Ref": "AWS::StackName"
+                  },
+                  "' ",
+                  "-e STACK_ID='",
+                  {
+                    "Ref": "AWS::StackId"
+                  },
+                  "' ",
+                  "-e ACCOUNT_ID='",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  "' ",
+                  "-e INSTANCE_NAME='NodeAsg' ",
+                  "-e DOCKER_FOR_IAAS_VERSION=$DOCKER_FOR_IAAS_VERSION ",
+                  "-v /var/run/docker.sock:/var/run/docker.sock ",
+                  "-v /usr/bin/docker:/usr/bin/docker ",
+                  "-v /var/log:/var/log ",
+                  "docker4x/init-aws:$DOCKER_FOR_IAAS_VERSION\n",
+                  "docker volume create --name sshkey\n",
+                  "docker run --label com.docker.editions.system --log-driver=json-file -ti --rm ",
+                  "--user root ",
+                  "-v sshkey:/etc/ssh ",
+                  "--entrypoint ssh-keygen ",
+                  "docker4x/shell-aws:$DOCKER_FOR_IAAS_VERSION ",
+                  "-A\n",
+                  "docker run --label com.docker.editions.system --log-driver=json-file --name=shell-aws --restart=always -d -p 22:22 ",
+                  "-v /home/docker/:/home/docker/ ",
+                  "-v /var/run/docker.sock:/var/run/docker.sock ",
+                  "-v /usr/bin/docker:/usr/bin/docker ",
+                  "-v /var/log:/var/log ",
+                  "-v sshkey:/etc/ssh ",
+                  "-v /etc/passwd:/etc/passwd:ro ",
+                  "-v /etc/shadow:/etc/shadow:ro ",
+                  "-v /etc/group:/etc/group:ro ",
+                  "docker4x/shell-aws:$DOCKER_FOR_IAAS_VERSION\n",
+                  "docker run --label com.docker.editions.system --log-driver=json-file --name=guide-aws --restart=always -d ",
+                  "-e DYNAMODB_TABLE='",
+                  {
+                    "Ref": "SwarmDynDBTable"
+                  },
+                  "' ",
+                  "-e NODE_TYPE='worker' ",
+                  "-e REGION='",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  "' ",
+                  "-e STACK_NAME='",
+                  {
+                    "Ref": "AWS::StackName"
+                  },
+                  "' ",
+                  "-e INSTANCE_NAME='NodeAsg' ",
+                  "-e VPC_ID='",
+                  {
+                    "Ref": "Vpc"
+                  },
+                  "' ",
+                  "-e STACK_ID='",
+                  {
+                    "Ref": "AWS::StackId"
+                  },
+                  "' ",
+                  "-e ACCOUNT_ID='",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  "' ",
+                  "-e SWARM_QUEUE='",
+                  {
+                    "Ref": "SwarmSQS"
+                  },
+                  "' ",
+                  "-e CLEANUP_QUEUE='",
+                  {
+                    "Ref": "SwarmSQSCleanup"
+                  },
+                  "' ",
+                  "-e RUN_VACUUM='",
+                  {
+                    "Ref": "EnableSystemPrune"
+                  },
+                  "' ",
+                  "-e DOCKER_FOR_IAAS_VERSION=$DOCKER_FOR_IAAS_VERSION ",
+                  "-v /var/run/docker.sock:/var/run/docker.sock ",
+                  "-v /usr/bin/docker:/usr/bin/docker ",
+                  "docker4x/guide-aws:$DOCKER_FOR_IAAS_VERSION\n",
+                  "yes | docker plugin install rexray/ebs REXRAY_PREEMPT=true EBS_SECRETKEY=\"\" EBS_ACCESSKEY=\"\"\n"
+                ]
+              ]
+            }
+          }
+        },
+        "Type": "AWS::AutoScaling::LaunchConfiguration",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "7310bf67-8960-4425-84a5-13cb84cd4184"
+          }
+        }
+      },
+      "NodeVpcSG": {
+        "DependsOn": "Vpc",
+        "Properties": {
+          "GroupDescription": "Node SecurityGroup",
+          "SecurityGroupEgress": [
+            {
+              "CidrIp": "0.0.0.0/0",
+              "FromPort": "8",
+              "IpProtocol": "icmp",
+              "ToPort": "0"
+            },
+            {
+              "CidrIp": "0.0.0.0/0",
+              "FromPort": "0",
+              "IpProtocol": "udp",
+              "ToPort": "65535"
+            },
+            {
+              "CidrIp": "0.0.0.0/0",
+              "FromPort": "0",
+              "IpProtocol": "tcp",
+              "ToPort": "2374"
+            },
+            {
+              "CidrIp": "0.0.0.0/0",
+              "FromPort": "2376",
+              "IpProtocol": "tcp",
+              "ToPort": "65535"
+            }
+          ],
+          "SecurityGroupIngress": [
+            {
+              "CidrIp": {
+                "Fn::FindInMap": [
+                  "VpcCidrs",
+                  "vpc",
+                  "cidr"
+                ]
+              },
+              "FromPort": "0",
+              "IpProtocol": "-1",
+              "ToPort": "65535"
+            }
+          ],
+          "VpcId": {
+            "Ref": "Vpc"
+          }
+        },
+        "Type": "AWS::EC2::SecurityGroup",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "e1ea806e-dff3-4d2c-be40-c6cfd981ddf5"
+          }
+        }
+      },
+      "ProxyInstanceProfile": {
+        "Properties": {
+          "Path": "/",
+          "Roles": [
+            {
+              "Ref": "ProxyRole"
+            }
+          ]
+        },
+        "Type": "AWS::IAM::InstanceProfile",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "83f2d0ff-55f5-478a-aebd-26e099d7be50"
+          }
+        }
+      },
+      "ProxyPolicies": {
+        "Properties": {
+          "PolicyDocument": {
+            "Statement": [
+              {
+                "Action": "elasticloadbalancing:*",
+                "Effect": "Allow",
+                "Resource": "*"
+              }
+            ],
+            "Version": "2012-10-17"
+          },
+          "PolicyName": "elb-update",
+          "Roles": [
+            {
+              "Ref": "ProxyRole"
+            }
+          ]
+        },
+        "Type": "AWS::IAM::Policy",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "ea757d6d-d297-4f65-96c9-ce89a7cf9ea1"
+          }
+        }
+      },
+      "ProxyRole": {
+        "Properties": {
+          "AssumeRolePolicyDocument": {
+            "Statement": [
+              {
+                "Action": [
+                  "sts:AssumeRole"
+                ],
+                "Effect": "Allow",
+                "Principal": {
+                  "Service": [
+                    "ec2.amazonaws.com",
+                    "autoscaling.amazonaws.com"
+                  ]
+                }
+              }
+            ],
+            "Version": "2012-10-17"
+          },
+          "Path": "/"
+        },
+        "Type": "AWS::IAM::Role",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "f7794626-4522-4717-811f-994853680647"
+          }
+        }
+      },
+      "PubSubnet1RouteTableAssociation": {
+        "DependsOn": [
+          "PubSubnetAz1",
+          "RouteViaIgw"
+        ],
+        "Properties": {
+          "RouteTableId": {
+            "Ref": "RouteViaIgw"
+          },
+          "SubnetId": {
+            "Ref": "PubSubnetAz1"
+          }
+        },
+        "Type": "AWS::EC2::SubnetRouteTableAssociation",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "81a1b0af-609f-4ce7-8a91-02485c13ff40"
+          }
+        }
+      },
+      "PubSubnet2RouteTableAssociation": {
+        "DependsOn": [
+          "PubSubnetAz2",
+          "RouteViaIgw"
+        ],
+        "Properties": {
+          "RouteTableId": {
+            "Ref": "RouteViaIgw"
+          },
+          "SubnetId": {
+            "Ref": "PubSubnetAz2"
+          }
+        },
+        "Type": "AWS::EC2::SubnetRouteTableAssociation",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "5fef0b09-e488-4320-9f42-560e482820a8"
+          }
+        }
+      },
+      "PubSubnet3RouteTableAssociation": {
+        "DependsOn": [
+          "PubSubnetAz3",
+          "RouteViaIgw"
+        ],
+        "Properties": {
+          "RouteTableId": {
+            "Ref": "RouteViaIgw"
+          },
+          "SubnetId": {
+            "Ref": "PubSubnetAz3"
+          }
+        },
+        "Type": "AWS::EC2::SubnetRouteTableAssociation",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "210586cb-ad57-41d1-8cfa-55e97dec7469"
+          }
+        }
+      },
+      "PubSubnetAz1": {
+        "DependsOn": "Vpc",
+        "Properties": {
+          "AvailabilityZone": {
+            "Fn::Select": [
+              {
+                "Fn::FindInMap": [
+                  "AWSRegion2AZ",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  "AZ0"
+                ]
+              },
+              {
+                "Fn::GetAZs": {
+                  "Ref": "AWS::Region"
+                }
+              }
+            ]
+          },
+          "CidrBlock": {
+            "Fn::FindInMap": [
+              "VpcCidrs",
+              "pubsubnet1",
+              "cidr"
+            ]
+          },
+          "Tags": [
+            {
+              "Key": "Name",
+              "Value": {
+                "Fn::Join": [
+                  "-",
+                  [
+                    {
+                      "Ref": "AWS::StackName"
+                    },
+                    "Subnet1"
+                  ]
+                ]
+              }
+            }
+          ],
+          "VpcId": {
+            "Ref": "Vpc"
+          }
+        },
+        "Type": "AWS::EC2::Subnet",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "3c2ed225-335b-4dcf-b751-14223ecb70fc"
+          }
+        }
+      },
+      "PubSubnetAz2": {
+        "DependsOn": "Vpc",
+        "Properties": {
+          "AvailabilityZone": {
+            "Fn::Select": [
+              {
+                "Fn::FindInMap": [
+                  "AWSRegion2AZ",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  "AZ1"
+                ]
+              },
+              {
+                "Fn::GetAZs": {
+                  "Ref": "AWS::Region"
+                }
+              }
+            ]
+          },
+          "CidrBlock": {
+            "Fn::FindInMap": [
+              "VpcCidrs",
+              "pubsubnet2",
+              "cidr"
+            ]
+          },
+          "Tags": [
+            {
+              "Key": "Name",
+              "Value": {
+                "Fn::Join": [
+                  "-",
+                  [
+                    {
+                      "Ref": "AWS::StackName"
+                    },
+                    "Subnet2"
+                  ]
+                ]
+              }
+            }
+          ],
+          "VpcId": {
+            "Ref": "Vpc"
+          }
+        },
+        "Type": "AWS::EC2::Subnet",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "dc61390b-bea1-41ae-8a4f-7c4c9ede0d40"
+          }
+        }
+      },
+      "PubSubnetAz3": {
+        "DependsOn": "Vpc",
+        "Properties": {
+          "AvailabilityZone": {
+            "Fn::Select": [
+              {
+                "Fn::FindInMap": [
+                  "AWSRegion2AZ",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  "AZ2"
+                ]
+              },
+              {
+                "Fn::GetAZs": {
+                  "Ref": "AWS::Region"
+                }
+              }
+            ]
+          },
+          "CidrBlock": {
+            "Fn::FindInMap": [
+              "VpcCidrs",
+              "pubsubnet3",
+              "cidr"
+            ]
+          },
+          "Tags": [
+            {
+              "Key": "Name",
+              "Value": {
+                "Fn::Join": [
+                  "-",
+                  [
+                    {
+                      "Ref": "AWS::StackName"
+                    },
+                    "Subnet3"
+                  ]
+                ]
+              }
+            }
+          ],
+          "VpcId": {
+            "Ref": "Vpc"
+          }
+        },
+        "Type": "AWS::EC2::Subnet",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "44c5a16c-a3f2-4b6d-9bae-bd47a745dcc0"
+          }
+        }
+      },
+      "PublicRouteViaIgw": {
+        "DependsOn": [
+          "AttachGateway",
+          "RouteViaIgw"
+        ],
+        "Properties": {
+          "DestinationCidrBlock": "0.0.0.0/0",
+          "GatewayId": {
+            "Ref": "InternetGateway"
+          },
+          "RouteTableId": {
+            "Ref": "RouteViaIgw"
+          }
+        },
+        "Type": "AWS::EC2::Route",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "007344c2-5377-416c-bd5e-e43c03a81705"
+          }
+        }
+      },
+      "RouteViaIgw": {
+        "DependsOn": "Vpc",
+        "Properties": {
+          "Tags": [
+            {
+              "Key": "Name",
+              "Value": {
+                "Fn::Join": [
+                  "-",
+                  [
+                    {
+                      "Ref": "AWS::StackName"
+                    },
+                    "RT"
+                  ]
+                ]
+              }
+            }
+          ],
+          "VpcId": {
+            "Ref": "Vpc"
+          }
+        },
+        "Type": "AWS::EC2::RouteTable",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "863d327a-72b0-4bd0-83c8-70c20d4ccc1f"
+          }
+        }
+      },
+      "SwarmAPIPolicy": {
+        "DependsOn": "ProxyRole",
+        "Properties": {
+          "PolicyDocument": {
+            "Statement": [
+              {
+                "Action": [
+                  "ec2:DescribeInstances",
+                  "ec2:DescribeVpcAttribute",
+                  "logs:CreateLogStream",
+                  "logs:PutLogEvents"
+                ],
+                "Effect": "Allow",
+                "Resource": "*"
+              }
+            ],
+            "Version": "2012-10-17"
+          },
+          "PolicyName": "swarm-policy",
+          "Roles": [
+            {
+              "Ref": "ProxyRole"
+            }
+          ]
+        },
+        "Type": "AWS::IAM::Policy",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "47ffdfa5-2a4b-4ca8-8b25-4e02cc1b74ca"
+          }
+        }
+      },
+      "SwarmAutoscalePolicy": {
+        "Properties": {
+          "PolicyDocument": {
+            "Statement": [
+              {
+                "Action": "autoscaling:*",
+                "Effect": "Allow",
+                "Resource": "*"
+              }
+            ],
+            "Version": "2012-10-17"
+          },
+          "PolicyName": "swarm-autoscale-policy",
+          "Roles": [
+            {
+              "Ref": "ProxyRole"
+            }
+          ]
+        },
+        "Type": "AWS::IAM::Policy",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "a143a7ef-e67c-46fa-9753-7a211651b88f"
+          }
+        }
+      },
+      "SwarmDynDBTable": {
+        "DependsOn": "ExternalLoadBalancer",
+        "Properties": {
+          "AttributeDefinitions": [
+            {
+              "AttributeName": "node_type",
+              "AttributeType": "S"
+            }
+          ],
+          "KeySchema": [
+            {
+              "AttributeName": "node_type",
+              "KeyType": "HASH"
+            }
+          ],
+          "ProvisionedThroughput": {
+            "ReadCapacityUnits": 1,
+            "WriteCapacityUnits": 1
+          },
+          "TableName": {
+            "Fn::Join": [
+              "-",
+              [
+                {
+                  "Ref": "AWS::StackName"
+                },
+                "dyndbtable"
+              ]
+            ]
+          }
+        },
+        "Type": "AWS::DynamoDB::Table",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "dead670d-68ca-45a6-bb3f-e12c85d7bd38"
+          }
+        }
+      },
+      "SwarmManagerUpgradeHook": {
+        "DependsOn": "SwarmSQS",
+        "Properties": {
+          "AutoScalingGroupName": {
+            "Ref": "ManagerAsg"
+          },
+          "LifecycleTransition": "autoscaling:EC2_INSTANCE_TERMINATING",
+          "NotificationTargetARN": {
+            "Fn::GetAtt": [
+              "SwarmSQS",
+              "Arn"
+            ]
+          },
+          "RoleARN": {
+            "Fn::GetAtt": [
+              "ProxyRole",
+              "Arn"
+            ]
+          }
+        },
+        "Type": "AWS::AutoScaling::LifecycleHook",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "3cd48135-9100-4ead-beff-e40adcbadf90"
+          }
+        }
+      },
+      "SwarmSQS": {
+        "Properties": {
+          "MessageRetentionPeriod": 43200,
+          "ReceiveMessageWaitTimeSeconds": 10
+        },
+        "Type": "AWS::SQS::Queue",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "2453a498-3140-4c39-93e2-09a1323bf5e8"
+          }
+        }
+      },
+      "SwarmSQSCleanup": {
+        "Properties": {
+          "MessageRetentionPeriod": 43200,
+          "ReceiveMessageWaitTimeSeconds": 10
+        },
+        "Type": "AWS::SQS::Queue",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "d9f68008-7512-4e8a-99c4-e95b9fdef3d2"
+          }
+        }
+      },
+      "SwarmSQSCleanupPolicy": {
+        "DependsOn": [
+          "ProxyRole",
+          "SwarmSQSCleanup"
+        ],
+        "Properties": {
+          "PolicyDocument": {
+            "Statement": [
+              {
+                "Action": "sqs:*",
+                "Effect": "Allow",
+                "Resource": {
+                  "Fn::GetAtt": [
+                    "SwarmSQSCleanup",
+                    "Arn"
+                  ]
+                }
+              }
+            ],
+            "Version": "2012-10-17"
+          },
+          "PolicyName": "swarm-sqs-cleanup-policy",
+          "Roles": [
+            {
+              "Ref": "ProxyRole"
+            }
+          ]
+        },
+        "Type": "AWS::IAM::Policy",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "f33e9dfc-0955-435a-9541-a74763e79afe"
+          }
+        }
+      },
+      "SwarmSQSPolicy": {
+        "DependsOn": [
+          "ProxyRole",
+          "SwarmSQS"
+        ],
+        "Properties": {
+          "PolicyDocument": {
+            "Statement": [
+              {
+                "Action": "sqs:*",
+                "Effect": "Allow",
+                "Resource": {
+                  "Fn::GetAtt": [
+                    "SwarmSQS",
+                    "Arn"
+                  ]
+                }
+              }
+            ],
+            "Version": "2012-10-17"
+          },
+          "PolicyName": "swarm-sqs-policy",
+          "Roles": [
+            {
+              "Ref": "ProxyRole"
+            }
+          ]
+        },
+        "Type": "AWS::IAM::Policy",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "7905d493-acb4-47fa-85a3-8b69de1dc0d4"
+          }
+        }
+      },
+      "SwarmWideSG": {
+        "DependsOn": "Vpc",
+        "Properties": {
+          "GroupDescription": "Swarm wide access",
+          "SecurityGroupIngress": [
+            {
+              "CidrIp": {
+                "Fn::FindInMap": [
+                  "VpcCidrs",
+                  "vpc",
+                  "cidr"
+                ]
+              },
+              "FromPort": "0",
+              "IpProtocol": "-1",
+              "ToPort": "65535"
+            }
+          ],
+          "VpcId": {
+            "Ref": "Vpc"
+          }
+        },
+        "Type": "AWS::EC2::SecurityGroup",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "12f73288-13a7-4a2c-b421-58119f62f6fd"
+          }
+        }
+      },
+      "SwarmWorkerUpgradeHook": {
+        "DependsOn": "SwarmSQS",
+        "Properties": {
+          "AutoScalingGroupName": {
+            "Ref": "NodeAsg"
+          },
+          "LifecycleTransition": "autoscaling:EC2_INSTANCE_TERMINATING",
+          "NotificationTargetARN": {
+            "Fn::GetAtt": [
+              "SwarmSQS",
+              "Arn"
+            ]
+          },
+          "RoleARN": {
+            "Fn::GetAtt": [
+              "ProxyRole",
+              "Arn"
+            ]
+          }
+        },
+        "Type": "AWS::AutoScaling::LifecycleHook",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "2b46678b-3a17-473a-bf3f-3d74fef288e9"
+          }
+        }
+      },
+      "Vpc": {
+        "Properties": {
+          "CidrBlock": {
+            "Fn::FindInMap": [
+              "VpcCidrs",
+              "vpc",
+              "cidr"
+            ]
+          },
+          "EnableDnsHostnames": "true",
+          "EnableDnsSupport": "true",
+          "Tags": [
+            {
+              "Key": "Name",
+              "Value": {
+                "Fn::Join": [
+                  "-",
+                  [
+                    {
+                      "Ref": "AWS::StackName"
+                    },
+                    "VPC"
+                  ]
+                ]
+              }
+            }
+          ]
+        },
+        "Type": "AWS::EC2::VPC",
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "4a840d92-f007-4bbc-b20f-519b11274153"
+          }
+        }
+      },
+      "SwarmStoragePolicy": {
+        "Type": "AWS::IAM::Policy",
+        "Properties": {
+          "PolicyDocument": {
+            "Statement": [
+              {
+                "Action": [
+                  "elasticfilesystem:CreateFileSystem",
+                  "elasticfilesystem:CreateTags",
+                  "elasticfilesystem:DeleteTags",
+                  "elasticfilesystem:CreateMountTarget",
+                  "elasticfilesystem:DescribeFileSystems",
+                  "elasticfilesystem:DescribeMountTargets",
+                  "elasticfilesystem:DeleteMountTarget",
+                  "elasticfilesystem:DeleteFileSystem",
+                  "ec2:AttachVolume",
+                  "ec2:CopySnapshot",
+                  "ec2:CreateNetworkInterface",
+                  "ec2:CreateSnapshot",
+                  "ec2:CreateTags",
+                  "ec2:CreateVolume",
+                  "ec2:DeleteNetworkInterface",
+                  "ec2:DeleteSnapshot",
+                  "ec2:DeleteVolume",
+                  "ec2:DescribeAvailabilityZones",
+                  "ec2:DescribeInstances",
+                  "ec2:DescribeNetworkInterfaces",
+                  "ec2:DescribeSnapshotAttribute",
+                  "ec2:DescribeSnapshots",
+                  "ec2:DescribeSubnets",
+                  "ec2:DescribeTags",
+                  "ec2:DescribeVolumeAttribute",
+                  "ec2:DescribeVolumeStatus",
+                  "ec2:DescribeVolumes",
+                  "ec2:DetachVolume",
+                  "ec2:ModifySnapshotAttribute",
+                  "ec2:ModifyVolumeAttribute"
+                ],
+                "Effect": "Allow",
+                "Resource": "*"
+              }
+            ],
+            "Version": "2012-10-17"
+          },
+          "PolicyName": "swarm-storage-policy",
+          "Roles": [
+            {
+              "Ref": "ProxyRole"
+            }
+          ]
+        },
+        "Metadata": {
+          "AWS::CloudFormation::Designer": {
+            "id": "fbf9e09d-b18f-4a61-8619-ea82bcd10ade"
+          }
+        },
+        "DependsOn": "ProxyRole"
+      }
+    }
+  }

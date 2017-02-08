@@ -64,6 +64,9 @@ Managed Plugin](https://github.com/codedellemc/labs/tree/master/setup-awsec2-doc
     Engine. Follow the directions to install REX-Ray using the Docker 1.13
     Managed Plugin System. This environment will use AWS EC2 along with EBS
     driver for REX-Ray to allow stateful applications to persist data.
+7. [Install REX-Ray as a Plugin on Docker for AWS (Cloudformation)](https://github.com/codedellemc/labs/tree/master/setup-dockerforaws)
+**EXPERIMENTAL** 
+    - Bring persistent volume functionality to [Docker for AWS](https://docs.docker.com/docker-for-aws/) with REX-Ray. Customizing the Cloudformation template allows automated installations of REX-Ray to AWS AutoScaling Groups and access to EBS volumes.
 
 ## Application Demo
 
