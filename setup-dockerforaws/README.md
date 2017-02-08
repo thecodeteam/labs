@@ -160,7 +160,7 @@ the cloud button. Follow the CloudFormation template to finish deployment.
   da7fee8a2354        rexray/ebs:latest   REX-Ray for Amazon EBS   true
   ~ $ docker volume create -d rexray/ebs --name yolo --opt=size=32
   yolo
-  ~ $ docker service create --replicas 1 --name pg -p 25565:25565 -e POSTGRES_PASSWORD=mysecretpassword  \
+  ~ $ docker service create --replicas 1 --name pg -e POSTGRES_PASSWORD=mysecretpassword \
   --mount type=volume,target=/var/lib/postgresql/data,source=yolo,volume-driver=rexray/ebs \
   --constraint 'node.role == worker' postgres
   hzn42hxssr2hfs7ehjtj9cgyl
