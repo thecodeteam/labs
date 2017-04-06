@@ -19,8 +19,9 @@ deploy.
 ### Cloning and Use
 
 Are you new to Vagrant? No worries. It's simple. The only step you need to
-complete is [install Vagrant](https://www.vagrantup.com/docs/installation/).
-After you've installed Vagrant and Git, clone the repo. When it's time
+complete is installing [Vagrant](https://www.vagrantup.com/docs/installation/)
+and [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
+After you've installed Vagrant and Git, clone the repo.
 
 ```
 $ git clone https://github.com/codedellemc/vagrant
@@ -28,9 +29,11 @@ $ cd vagrant/scaleio/
 ```
 
 When it comes time to use the machines you can open 3 terminal sessions to
-MDM1,MDM2, and TB. In this lab, MDM1 functions as the API gateway,
+MDM1,MDM2, and TB. In this lab, MDM1 (meta data manager 1) functions as the API
+gateway, the
 Master/Manager/Controller role for container orchestrators, and REX-Ray utilizes
-it to access the storage platform. MDM2 and TB are configured as Worker nodes with no management functionality.
+it to access the storage platform. MDM2 and TB (tie breaker) are configured as
+Worker nodes with no management functionality.
 
 ```
 ...window 1...
@@ -79,12 +82,13 @@ docker run -d --volume-driver=rexray -v mysql-data:/var/lib/mysql -e MYSQL_ROOT_
 
 #### Docker High Availability
 
-Since the nodes all have access to the ScaleIO environment, fail over services
+Since the nodes all have access to the ScaleIO environment, fail over
+capabilities
 with REX-Ray are available by starting a container with a persistent volume on
 one host, and starting it again on another. Docker's integration with REX-Ray
-will automatically forcefully unmount the volume from the original host and
-mount the volume to the new host and map the volume to the new container. This
-creates high availability for your application to continue working as intended.
+will forcefully unmount the volume from the original host and mount the volume
+to the new host automatically. This creates high availability for your
+application to continue working as intended.
 
 ### Docker Swarm
 
