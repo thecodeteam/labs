@@ -37,7 +37,7 @@ curl -sSL https://dl.bintray.com/emccode/rexray/install | sh -s -- stable
 ### Step 3: Deploy a REX-Ray Controller Pod
 
 Define a REX-Ray controller pod and deployment, using a yaml file. This pod will use a preconfigured REX-Ray controller image hosted on DockerHub 
-(`rexray/controller:0.7.0`) . Change the
+(`cduchesne/rexray-controller:0.8.1`) . Change the
 username, password, and endpoint for your usage
 
 ```
@@ -70,7 +70,7 @@ spec:
         app: rexraycontroller
     spec:
       containers:
-      - image: rexray/controller:0.7.0
+      - image: cduchesne/rexray-controller:0.8.1
         imagePullPolicy: Always
         name: rexraycontroller
         env:
