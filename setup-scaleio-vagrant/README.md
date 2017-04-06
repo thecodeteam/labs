@@ -162,33 +162,33 @@ REX-Ray is installed on all nodes for ease of volume management. If storage
 classes and dynamic provisioning is not used, Kubernetes expects the volumes to be available. REX-Ray is an easy tool to quickly create the volumes. 
 
 1. Create a new volume that is a dependency of `deployment.yaml`:
- - `sudo rexray create pgdata-k8-01 --size=16`
+  - `sudo rexray create pgdata-k8-01 --size=16`
 2. Create the [Kubernetes Secret]
 (https://kubernetes.io/docs/concepts/configuration/secret/). The `secret.yaml` contains all the information
 to communicate with the ScaleIO Gateway and sensitive information is a base-64
 encoded:
- - `kubectl create -f secret.yaml`
+  - `kubectl create -f secret.yaml`
 3. Create the [Kubernetes Deployment]
 (https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) which
 will deploy a [Pod](https://kubernetes.io/docs/concepts/workloads/pods/pod/)
 with a postgres container.
- - `kubectl create -f deployment.yaml`
+  - `kubectl create -f deployment.yaml`
 4. Get the pod list:
- - `kubectl get pods`
+  - `kubectl get pods`
 5. View the pod details
- - `kubectl describe pod <pod id from last step>`
+  - `kubectl describe pod <pod id from last step>`
 6. A Deployment will maintain state to make sure this container is always
 running. Kill the container and watch
- - `kubectl delete pod <pod id from last step>`
+  - `kubectl delete pod <pod id from last step>`
 7. Get the pod list:
- - `kubectl get pods`
+  - `kubectl get pods`
 8. View the pod details and notice that the container is restarting on a
 different host but is performing all the functions necessary to detach it
 from the previous host and move it to the new worker. 
- - `kubectl describe pod <pod id from last step>`
- - **NOTE:** you will see an error that says the volume was already mapped. This
- is a false positive because the container and volume follow along. Try it
- yourself by adding data to the postgres container following the steps at [Storage Persistence with Postgres using REX-Ray](https://github.com/codedellemc/labs/tree/master/demo-persistence-with-postgres-docker)
+  - `kubectl describe pod <pod id from last step>`
+  - **NOTE:** you will see an error that says the volume was already mapped.
+  This is a false positive because the container and volume follow along. Try it
+  yourself by adding data to the postgres container following the steps at [Storage Persistence with Postgres using REX-Ray](https://github.com/codedellemc/labs/tree/master/demo-persistence-with-postgres-docker)
 
 
 ### Helpful Tips
