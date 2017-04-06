@@ -14,7 +14,6 @@
 ### Environment
 This guide was written for use by the [Vagrant ScaleIO](https://github.com/emccode/vagrant/tree/master/scaleio) ([setup instructions](https://github.com/codedellemc/demo/tree/master/setup-scaleio-vagrant)) deployment because the IP addresses never change. However, any REX-Ray compatible storage platform can be used and disregard instructions for MDM1, MDM2, and TB usage. 
 
-
 ### Create the Docker Swarm Cluster
 
 All nodes should have Docker 1.12.1 or higher installed to take advantage of the the built-in [Swarm Mode](https://docs.docker.com/engine/swarm/) capability. 
@@ -43,20 +42,20 @@ Two options can be used to create the volumes. From the terminal session of MDM1
 1. Docker Volume 
 
   ```
-$ docker volume create -d rexray --name mc_data --opt=size=5
-$ docker volume create -d rexray --name mc_mods --opt=size=5
-$ docker volume create -d rexray --name mc_config --opt=size=5
-$ docker volume create -d rexray --name mc_plugins --opt=size=5
-$ docker volume create -d rexray --name mc_home_minecraft --opt=size=5
+$ docker volume create -d rexray --name mc_data --opt=size=5 && \
+docker volume create -d rexray --name mc_mods --opt=size=5 && \
+docker volume create -d rexray --name mc_config --opt=size=5 && \
+docker volume create -d rexray --name mc_plugins --opt=size=5 && \
+docker volume create -d rexray --name mc_home_minecraft --opt=size=5
   ```
 
 2. REX-Ray CLI
   ```
-$ sudo rexray volume create --volumename mc_data --size=5
-$ sudo rexray volume create --volumename mc_mods --size=5
-$ sudo rexray volume create --volumename mc_config --size=5
-$ sudo rexray volume create --volumename mc_plugins --size=5
-$ sudo rexray volume create --volumename mc_home_minecraft --size=5
+$ sudo rexray volume create mc_data --size=5 && \
+sudo rexray volume create mc_mods --size=5 && \
+sudo rexray volume create mc_config --size=5 && \
+sudo rexray volume create mc_plugins --size=5 && \
+sudo rexray volume create mc_home_minecraft --size=5
   ```
 
 Any node that has access to the storage platform (or in this case, is a part of the ScaleIO cluster) will have access to the pre-created volumes:

@@ -27,7 +27,7 @@ $ docker volume create -d rexray --name pg_data --opt=size=8
 
 2. REX-Ray CLI
   ```
-$ sudo rexray volume create --size=8 pg_data 
+$ sudo rexray volume create pg_data --size=8
   ```
 
 All hosts will have access to this volume.
