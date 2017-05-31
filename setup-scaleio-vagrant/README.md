@@ -20,7 +20,7 @@ respective sections.
 | `SCALEIO_REXRAY_INSTALL` | Install the latest REX-Ray release   | True |
 | `SCALEIO_SWARM_INSTALL`  | Configure Docker SwarmKit for the cluster | False |
 | `SCALEIO_MESOS_INSTALL` | Install/Configure Apache Mesos with Marathon|False|
-| `SCALEIO_K8S_INSTALL` | Install/Configure Kubernetes for the cluster|False|
+| `SCALEIO_K8_INSTALL` | Install/Configure Kubernetes for the cluster|False|
 
   - [Cloning and Use](#cloning-and-use)
   - [Docker and REX-Ray](#docker-and-rexray)
@@ -158,10 +158,10 @@ deployment, scaling, and management of containerized applications. ScaleIO has a
 native [Kubernetes](https://kubernetes.io/) integration. This means it doesn't rely on a tool like REX-Ray to function. Using standard
 Kubernetes Pods, Deployments/ReplicaSet, Dynamic Provision, etc is all built-in.
 
- - `SCALEIO_K8S_INSTALL` - Default is `false`. Set to `true` to 
+ - `SCALEIO_K8_INSTALL` - Default is `false`. Set to `true` to 
  automatically install and configure the Kubernetes.
  Docker will automatically be installed during this process.
-   - `export SCALEIO_K8S_INSTALL=true`
+   - `export SCALEIO_K8_INSTALL=true`
 
 On `MDM1` there is a folder called `k8sExamples` that can be used to create the
 secret, a standard pod, deployment, storage class, and more. Follow the 
