@@ -1,4 +1,4 @@
-# ScaleIO with Docker Swarm, Mesos with Marathon, and Kubernetes 
+# Kubernetes, Docker Swarm, and Mesos with Marathon Using Vagrant with ScaleIO
 
 You've been looking for a simple way to test any container orchestrator and
 now you finally made it to the right place!
@@ -8,6 +8,19 @@ host will have ScaleIO (a software that turns DAS storage into shared and
 scale-out block storage) installed and configured. But before getting started,
 make sure to read the instructions for the type of environment you want to
 deploy.
+
+The following environment variables can be used to install and configure
+different components. Each one is given a further description below in their
+respective sections.
+
+| Env Variable        | Use           | On By Default?  |
+| ------------- |:-------------:| :-----:|
+| `SCALEIO_RAM`  | Set the RAM size for MDM2 and TB machines | 1024 |
+| `SCALEIO_DOCKER_INSTALL` | Install the latest Docker CE release | True |
+| `SCALEIO_REXRAY_INSTALL` | Install the latest REX-Ray release   | True |
+| `SCALEIO_SWARM_INSTALL`  | Configure Docker SwarmKit for the cluster | False |
+| `SCALEIO_MESOS_INSTALL` | Install/Configure Apache Mesos with Marathon|False|
+| `SCALEIO_K8S_INSTALL` | Install/Configure Kubernetes for the cluster|False|
 
   - [Cloning and Use](#cloning-and-use)
   - [Docker and REX-Ray](#docker-and-rexray)
@@ -145,16 +158,14 @@ deployment, scaling, and management of containerized applications. ScaleIO has a
 native [Kubernetes](https://kubernetes.io/) integration. This means it doesn't rely on a tool like REX-Ray to function. Using standard
 Kubernetes Pods, Deployments/ReplicaSet, Dynamic Provision, etc is all built-in.
 
- - `SCALEIO_K8_INSTALL` - Default is `false`. Set to `true` to 
+ - `SCALEIO_K8S_INSTALL` - Default is `false`. Set to `true` to 
  automatically install and configure the Kubernetes.
  Docker will automatically be installed during this process.
-   - `export SCALEIO_K8_INSTALL=true`
+   - `export SCALEIO_K8S_INSTALL=true`
 
-On `MDM1` there is a folder called `k8examples` that can be used to create the
+On `MDM1` there is a folder called `k8sExamples` that can be used to create the
 secret, a standard pod, deployment, storage class, and more. Follow the 
-[offical ScaleIO Kuberentes Documentation]
-(https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/scaleio)
-and learn how to use each component. 
+[offical ScaleIO Kuberentes Documentation](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/scaleio) and learn how to use each component. 
 
 ##### Using a Kubernetes Deployment
 
@@ -163,16 +174,11 @@ classes and dynamic provisioning is not used, Kubernetes expects the volumes to 
 
 1. Create a new volume that is a dependency of `deployment.yaml`:
   - `sudo rexray create pgdata-k8-01 --size=16`
-2. Create the [Kubernetes Secret]
-(https://kubernetes.io/docs/concepts/configuration/secret/). The `secret.yaml` contains all the information
+2. Create the [Kubernetes Secret](https://kubernetes.io/docs/concepts/configuration/secret/). The `secret.yaml` contains all the information
 to communicate with the ScaleIO Gateway and sensitive information is a base-64
 encoded:
   - `kubectl create -f secret.yaml`
-3. Create the [Kubernetes Deployment]
-(https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) which
-will deploy a [Pod](https://kubernetes.io/docs/concepts/workloads/pods/pod/)
-with a postgres container.
-  - `kubectl create -f deployment.yaml`
+3. Create the [Kubernetes Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) which will deploy a [Pod](https://kubernetes.io/docs/concepts/workloads/pods/pod/) with a postgres container.- `kubectl create -f deployment.yaml`
 4. Get the pod list:
   - `kubectl get pods`
 5. View the pod details
