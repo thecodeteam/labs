@@ -47,7 +47,7 @@ Volumes. Terminal Window 2:
     endpoint: http://192.168.99.1:18083
     volumePath: /Users/$USER/VirtualBox/Volumes
     controllerName: SATA"
-  $ docker-machine ssh vbox03 "sudo tee -a /etc/rexray/config.yml << EOF
+  $ docker-machine ssh vbox02 "sudo tee -a /etc/rexray/config.yml << EOF
   libstorage:
     service: virtualbox
     integration:
