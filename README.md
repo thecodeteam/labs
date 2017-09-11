@@ -28,7 +28,7 @@ Vagrant with ScaleIO as storage](https://github.com/codedellemc/labs/tree/master
     three (3) hosts with VirtualBox. Each host will have ScaleIO (a software that
     turns DAS storage into shared and scale-out block storage) installed and
     configured. Using a combination of defaults and environment variables,
-    choose to install [REX-Ray](https://rexray.codedellemc.com/), Kubernetes,
+    choose to install [REX-Ray](https://rexray.thecodeteam.com/), Kubernetes,
     Docker Swarm, or Mesos with Marathon. This creates a fully configured
     environment ready to test stateful applications using the ScaleIO driver
     with multiple container orchestrators. If you've been looking for a simple
@@ -99,7 +99,7 @@ Claims with Kubernetes Pods and REX-Ray (Flex-REX)](https://github.com/codedelle
     - Learn how to use MySQL with a Persistent Volume in a Kubernetes Pod. Go
     through all the steps for manually creating the volume, creating the
     persistent volume claim, and attaching it to the pod. This will also
-    demonstrate how to do a migration of the MySQL Pod from one host to another.Learn more about [FlexREX](https://rexray.readthedocs.io/en/stable/user-guide/schedulers/#kubernetes) on the [{code} blog](https://blog.codedellemc.com/2017/01/24/flexrex-adds-storage-options-kubernetes/).
+    demonstrate how to do a migration of the MySQL Pod from one host to another.Learn more about [FlexREX](https://rexray.readthedocs.io/en/stable/user-guide/schedulers/#kubernetes) on the [{code} blog](https://blog.thecodeteam.com/2017/01/24/flexrex-adds-storage-options-kubernetes/).
 
 #### Docker Swarm
 
@@ -145,4 +145,4 @@ Create a fork of the project into your own repository. Make all your necessary c
 
 ### Support
 
-Please file bugs and issues on the GitHub issues page for this project. This is to help keep track and document everything related to this repo. For general discussions and further support you can join the [{code} by Dell EMC Community slack channel](http://community.codedellemc.com/). The code and documentation are released with no warranties or SLAs and are intended to be supported through a community driven process.
+Please file bugs and issues on the GitHub issues page for this project. This is to help keep track and document everything related to this repo. For general discussions and further support you can join the [{code} Community slack channel](http://community.thecodeteam.com/). The code and documentation are released with no warranties or SLAs and are intended to be supported through a community driven process.
