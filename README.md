@@ -22,8 +22,9 @@ deploying different types of applications.
 Quickly deploy an environment to begin application testing. Each 
 has key pieces of technology that make them unique.
 
-1. [Kubernetes, Docker Swarm, and Mesos with Marathon Using
-Vagrant with ScaleIO as storage](https://github.com/codedellemc/labs/tree/master/setup-scaleio-vagrant)
+1. [Persistence with your choice of Kubernetes, Docker Swarm, or Mesos with
+Marathon Using Vagrant with ScaleIO]
+(https://github.com/codedellemc/labs/tree/master/setup-scaleio-vagrant)
     - This is the trifecta. Use the Vagrant file provided to create
     three (3) hosts with VirtualBox. Each host will have ScaleIO (a software that
     turns DAS storage into shared and scale-out block storage) installed and
@@ -61,19 +62,13 @@ Vagrant with ScaleIO as storage](https://github.com/codedellemc/labs/tree/master
     REX-Ray. The hosts will automatically install and configure Docker Engine
     with REX-Ray to provide a fully configured environment ready to test
     stateful applications.
-5. [Kubernetes with FlexREX on ScaleIO](https://github.com/codedellemc/labs/tree/master/demo-persistence-with-scaleio-kubernetes)
-    - FlexREX is an implementation of a FlexVolume driver for Kubernetes that
-    enables the entire library of REX-Ray/libStorage supported storage
-    platforms. This lab will explore the centralized architecture where
-    REX-Ray is deployed as a central controller within a Pod and FlexREX will be
-    installed on the Kubernetes minion nodes.
-6. [Use REX-Ray as a Docker Plugin with AWS EBS Volumes](https://github.com/codedellemc/labs/tree/master/setup-awsec2-docker-plugin)
+5. [Use REX-Ray as a Docker Plugin with AWS EBS Volumes](https://github.com/codedellemc/labs/tree/master/setup-awsec2-docker-plugin)
     - Use [Docker Machine](https://github.com/docker/machine) to deploy an AWS
     EC2 host that is installed and configured with the latest and stable Docker
     Engine. Follow the directions to install REX-Ray using the Docker Managed
     Plugin System. This environment will use AWS EC2 along with EBS driver for
     REX-Ray to allow stateful applications to persist data.
-7. [Install REX-Ray as a Plugin on Docker for AWS (Cloudformation)](https://github.com/codedellemc/labs/tree/master/setup-dockerforaws)
+6. [Install REX-Ray as a Plugin on Docker for AWS (Cloudformation)](https://github.com/codedellemc/labs/tree/master/setup-dockerforaws)
 **EXPERIMENTAL** 
     - Bring persistent volume functionality to [Docker for AWS](https://docs.docker.com/docker-for-aws/) with REX-Ray. Customizing the Cloudformation template allows automated installations of REX-Ray to AWS AutoScaling Groups and access to EBS volumes.
 
@@ -89,22 +84,20 @@ Vagrant with ScaleIO as storage](https://github.com/codedellemc/labs/tree/master
 
 #### Kubernetes
 
-1. [Create Secrets, Deployments, and Storage Classes to use Dynamic
-Provisioning with Kubernetes](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/scaleio)
+1. [Create Secrets, Deployments, Storage Classes, and Stateful Sets to use
+Dynamic Provisioning with Kubernetes](https://github.com/codedellemc/vagrant/tree/master/scaleio#kubernetes)
     - Use the native integration of ScaleIO with Kubernetes to do everything
     from creating secrets and using StorageClasses to provision Dynamic
-    Volumes with Deployments.
-2. [Storage Persistence with MySQL Persistent Volumes and Persistent Volume
-Claims with Kubernetes Pods and REX-Ray (Flex-REX)](https://github.com/codedellemc/labs/tree/master/demo-persistence-with-scaleio-kubernetes#step-5-quick-and-simple-create-a-persistent-volume-and-utilize-it-in-a-pod)
-    - Learn how to use MySQL with a Persistent Volume in a Kubernetes Pod. Go
-    through all the steps for manually creating the volume, creating the
-    persistent volume claim, and attaching it to the pod. This will also
-    demonstrate how to do a migration of the MySQL Pod from one host to another.Learn more about [FlexREX](https://rexray.readthedocs.io/en/stable/user-guide/schedulers/#kubernetes) on the [{code} blog](https://blog.thecodeteam.com/2017/01/24/flexrex-adds-storage-options-kubernetes/).
+    Volumes with Deployments. On master node in the above vagrant environment,
+    there is a folder called `k8s-examples` which contains all the files.
+    required.
 
 #### Docker Swarm
 
 1. [Storage Persistence and Failover with Minecraft using REX-Ray and Docker
 Swarm Mode](https://github.com/codedellemc/labs/tree/master/demo-persistence-with-minecraft-docker)
+    - **NOT WORKING:** The Minecraft client has been deprecated. Use something
+    like Postgres for testing right now. 
     - Take a set of nodes and cluster them together using [Docker Swarm Mode](https://docs.docker.com/engine/swarm/)
     which allows distributed computing, reconciliation of failed hosts, and
     extended networking functionality. Play a game of Minecraft to create an
