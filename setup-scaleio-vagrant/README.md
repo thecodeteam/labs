@@ -15,12 +15,12 @@ respective sections.
 
 | Env Variable        | Use           | On By Default?  |
 | ------------- |:-------------:| :-----:|
-| `SCALEIO_RAM`  | Set the RAM size for MDM2 and TB machines | 1024 |
+| `SCALEIO_RAM`  | Set the RAM size for node01 and node02 machines | 1024 |
 | `SCALEIO_DOCKER_INSTALL` | Install the latest Docker CE release | True |
 | `SCALEIO_REXRAY_INSTALL` | Install the latest REX-Ray release   | True |
 | `SCALEIO_SWARM_INSTALL`  | Configure Docker SwarmKit for the cluster | False |
 | `SCALEIO_MESOS_INSTALL` | Install/Configure Apache Mesos with Marathon|False|
-| `SCALEIO_K8_INSTALL` | Install/Configure Kubernetes for the cluster|False|
+| `SCALEIO_K8S_INSTALL` | Install/Configure Kubernetes for the cluster|False|
 
   - [Cloning and Use](#cloning-and-use)
   - [Docker and REX-Ray](#docker-and-rexray)
@@ -42,24 +42,24 @@ $ cd vagrant/scaleio/
 ```
 
 When it comes time to use the machines you can open 3 terminal sessions to
-MDM1,MDM2, and TB. In this lab, MDM1 (meta data manager 1) functions as the API
-gateway, the
-Master/Manager/Controller role for container orchestrators, and REX-Ray utilizes
-it to access the storage platform. MDM2 and TB (tie breaker) are configured as
-Worker nodes with no management functionality.
+master, node01, and node02. In this lab, master functions as the API gateway,
+the Master/Manager/Controller role for container orchestrators, and REX-Ray
+utilizes it to access the storage platform. node01 and node02 are configured as
+worker nodes with no management functionality.
 
 ```
 ...window 1...
-$ vagrant ssh mdm1
+$ vagrant ssh master
 ...window 2...
-$ vagrant ssh mdm2
+$ vagrant ssh node01
 ...window 3...
-$ vagrant ssh tb
+$ vagrant ssh node02
 ```
 
 If you're interested in using the ScaleIO GUI, it is automatically extracted and
 put into the `vagrant/scaleio/gui` directory. Run `./run.sh` to start the GUI.
-Connect to your instance at 192.168.50.12 with the credentials `admin` and `Scaleio123`.
+Connect to your instance at 192.168.50.11 with the credentials `admin` and
+`Scaleio123`.
 
 ![alt text](https://raw.githubusercontent.com/codedellemc/vagrant/master/scaleio/docs/images/scaleio-docker-rexray.png)
 
@@ -115,7 +115,9 @@ behavior. Use `export` with environment variables.
  automatically be installed during this process.
    - `export SCALEIO_SWARM_INSTALL=true`
 
-The `docker service` command is used to create a service that is scheduled on nodes and can be rescheduled on a node failure. As a quick demonstration, go to MDM1 and run a postgres service and pin it to the worker nodes:
+The `docker service` command is used to create a service that is scheduled on
+nodes and can be rescheduled on a node failure. As a quick demonstration, go to
+master and run a postgres service and pin it to the worker nodes:
 
 ```
 $ docker service create --replicas 1 --name pg -e POSTGRES_PASSWORD=mysecretpassword \
@@ -138,13 +140,13 @@ other compute resources enabling fault-tolerant and elastic distributed systems 
  Docker and REX-Ray will automatically be installed during this process.
    - `export SCALEIO_MESOS_INSTALL=true`
 
-Mesos and Marathon Web GUIs will be accessible from `http://192.168.50.12:5050`
-and `http://192.168.50.12:8080` after installation is complete. 
+Mesos and Marathon Web GUIs will be accessible from `http://192.168.50.11:5050`
+and `http://192.168.50.11:8080` after installation is complete. 
 
 For Instructions for deploying containers, visit the [{code} Labs Application
 Demo](https://github.com/codedellemc/labs) section and try [Storage Persistence
 with
-Postgres using Mesos, Marathon, Docker, and REX-Ray](Storage Persistence with Postgres using Mesos, Marathon, Docker, and REX-Ray). Mesos and Marathon Web GUIs will be accessible from `http://192.168.50.12:5050` and `http://192.168.50.12:8080`.
+Postgres using Mesos, Marathon, Docker, and REX-Ray](https://github.com/codedellemc/labs/tree/master/demo-persistence-with-postgres-marathon-docker).
 
 ```
 $ curl -O https://raw.githubusercontent.com/codedellemc/labs/master/demo-persistence-with-postgres-marathon-docker/postgres.json
@@ -155,17 +157,20 @@ $ curl -k -XPOST -d @postgres.json -H "Content-Type: application/json" http://19
 
 [Kubernetes](https://kubernetes.io/) is an open-source system for automating
 deployment, scaling, and management of containerized applications. ScaleIO has a
-native [Kubernetes](https://kubernetes.io/) integration. This means it doesn't rely on a tool like REX-Ray to function. Using standard
-Kubernetes Pods, Deployments/ReplicaSet, Dynamic Provision, etc is all built-in.
+native [Kubernetes](https://kubernetes.io/) integration. This means it doesn't
+rely on a tool like REX-Ray to function. Functionality such as Dynamic
+Provisioning with Persistent Volume Claims, Deployments, and StatefulSets work
+out of the box.
 
- - `SCALEIO_K8_INSTALL` - Default is `false`. Set to `true` to 
+ - `SCALEIO_K8S_INSTALL` - Default is `false`. Set to `true` to 
  automatically install and configure the Kubernetes.
  Docker will automatically be installed during this process.
-   - `export SCALEIO_K8_INSTALL=true`
+   - `export SCALEIO_K8S_INSTALL=true`
 
-On `MDM1` there is a folder called `k8sExamples` that can be used to create the
+On `master` there is a folder called `k8s_examples` that can be used to create
+the
 secret, a standard pod, deployment, storage class, and more. Follow the 
-[offical ScaleIO Kuberentes Documentation](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/scaleio) and learn how to use each component. 
+[offical ScaleIO Kuberentes Documentation](https://github.com/kubernetes/kubernetes/tree/master/examples/volumes/scaleio) and learn how to use each component.
 
 ##### Using a Kubernetes Deployment
 
