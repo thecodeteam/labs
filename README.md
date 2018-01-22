@@ -22,9 +22,15 @@ deploying different types of applications.
 Quickly deploy an environment to begin application testing. Each 
 has key pieces of technology that make them unique.
 
-1. [Persistence with your choice of Kubernetes, Docker Swarm, or Mesos with
-Marathon Using Vagrant with ScaleIO]
-(https://github.com/codedellemc/labs/tree/master/setup-scaleio-vagrant)
+1. [Persistent Applications with Docker and REX-Ray](https://github.com/thecodeteam/vg-docker-rexray/)
+    - This is a vagrant environment for testing persistent applications
+    using REX-Ray and Docker. Follow guide to deploy a three node environment
+    using Vagrant with one line. You have the choice of using [Dell EMC ScaleIO](https://www.dellemc.com/en-us/storage/scaleio/index.htm) or VirtualBox
+    Media as your storage platform using a simple environment variable. The
+    guide will show you how to create volumes and run your first persistent
+    application.
+2. [Persistence with your choice of Kubernetes, Docker Swarm, or Mesos with
+Marathon Using Vagrant with ScaleIO](https://github.com/codedellemc/labs/tree/master/setup-scaleio-vagrant)
     - This is the trifecta. Use the Vagrant file provided to create
     three (3) hosts with VirtualBox. Each host will have ScaleIO (a software that
     turns DAS storage into shared and scale-out block storage) installed and
@@ -96,8 +102,6 @@ Dynamic Provisioning with Kubernetes](https://github.com/codedellemc/vagrant/tre
 
 1. [Storage Persistence and Failover with Minecraft using REX-Ray and Docker
 Swarm Mode](https://github.com/codedellemc/labs/tree/master/demo-persistence-with-minecraft-docker)
-    - **NOT WORKING:** The Minecraft client has been deprecated. Use something
-    like Postgres for testing right now. 
     - Take a set of nodes and cluster them together using [Docker Swarm Mode](https://docs.docker.com/engine/swarm/)
     which allows distributed computing, reconciliation of failed hosts, and
     extended networking functionality. Play a game of Minecraft to create an
