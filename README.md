@@ -29,18 +29,20 @@ has key pieces of technology that make them unique.
     Media as your storage platform using a simple environment variable. The
     guide will show you how to create volumes and run your first persistent
     application.
-2. [Persistence with your choice of Kubernetes, Docker Swarm, or Mesos with
+2. [A 3 Node Kubernetes Cluster with the Container Storage Interface Enabled](https://github.com/thecodeteam/vg-kubernetes/)
+    - This vagrant environment will deploy a 3-node environment with a single Kubernetes Controller and 2 Nodes. By default, Dell EMC ScaleIO is installed on each node to provide data persistence. In addition, the [Container Storage Interface (CSI)](https://github.com/container-storage-interface) is enabled by default along with the [ScaleIO CSI Plugin](https://github.com/thecodeteam/csi-scaleio). The examples for deploying the CSI controller, StorageClass, and more can be found on the [vg-kubernetes readme](https://github.com/thecodeteam/vg-kubernetes).
+3. [Persistence with your choice of Kubernetes, Docker Swarm, or Mesos with
 Marathon Using Vagrant with ScaleIO](https://github.com/codedellemc/labs/tree/master/setup-scaleio-vagrant)
     - This is the trifecta. Use the Vagrant file provided to create
     three (3) hosts with VirtualBox. Each host will have ScaleIO (a software that
     turns DAS storage into shared and scale-out block storage) installed and
     configured. Using a combination of defaults and environment variables,
-    choose to install [REX-Ray](https://rexray.thecodeteam.com/), Kubernetes,
+    choose to install [REX-Ray](https://rexray.io/), Kubernetes,
     Docker Swarm, or Mesos with Marathon. This creates a fully configured
     environment ready to test stateful applications using the ScaleIO driver
     with multiple container orchestrators. If you've been looking for a simple
     way to test any container orchestrator, this is the lab for you.
-2. [Deploy VirtualBox with Docker Machine and Install REX-Ray](https://github.com/codedellemc/labs/tree/master/setup-virtualbox-dockermachine)
+4. [Deploy VirtualBox with Docker Machine and Install REX-Ray](https://github.com/codedellemc/labs/tree/master/setup-virtualbox-dockermachine)
     - Use [Docker Machine](https://github.com/docker/machine) to deploy a VirtualBox host that is installed and
     configured with the latest and stable Docker Engine. Follow the directions
     to install REX-Ray using `curl | sh` and learn how to write a properly
@@ -48,7 +50,7 @@ Marathon Using Vagrant with ScaleIO](https://github.com/codedellemc/labs/tree/ma
     driver for REX-Ray to allow stateful applications to persist data. This is
     the perfect lab for any beginner looking to get started using REX-Ray and
     container persistence on your local machine.
-3. [3-Node ScaleIO + 3-Node Apache Mesos Cluster with Marathon on AWS](http://scaleio-framework.readthedocs.io/en/latest/user-guide/demo/)
+5. [3-Node ScaleIO + 3-Node Apache Mesos Cluster with Marathon on AWS](http://scaleio-framework.readthedocs.io/en/latest/user-guide/demo/)
     - Use an [AWS Cloudformtion](https://aws.amazon.com/cloudformation/)
     template to deploy two (2) clusters in AWS. The first cluster is a three (3)
     node ScaleIO environment which will be used by REX-Ray as the storage
@@ -62,19 +64,19 @@ Marathon Using Vagrant with ScaleIO](https://github.com/codedellemc/labs/tree/ma
         the SDS components to add more storage to the existing ScaleIO cluster
         based on your pool and domain configuration settings. Try it at the 
         [Custom ScaleIO Framework Deployment](https://github.com/codedellemc/labs/tree/master/setup-scaleio-aws-custom)
-4. [Deploy a 3-Node Ceph Environment Using Vagrant](https://github.com/codedellemc/vagrant/tree/master/ceph)
+6. [Deploy a 3-Node Ceph Environment Using Vagrant](https://github.com/codedellemc/vagrant/tree/master/ceph)
     - This Vagrant environment uses VirtualBox and Virtual Media as storage for
     Ceph to be consumed by REX-Ray along with Docker as the container runtime. This can be used as a quick way to get started working with Ceph and
     REX-Ray. The hosts will automatically install and configure Docker Engine
     with REX-Ray to provide a fully configured environment ready to test
     stateful applications.
-5. [Use REX-Ray as a Docker Plugin with AWS EBS Volumes](https://github.com/codedellemc/labs/tree/master/setup-awsec2-docker-plugin)
+7. [Use REX-Ray as a Docker Plugin with AWS EBS Volumes](https://github.com/codedellemc/labs/tree/master/setup-awsec2-docker-plugin)
     - Use [Docker Machine](https://github.com/docker/machine) to deploy an AWS
     EC2 host that is installed and configured with the latest and stable Docker
     Engine. Follow the directions to install REX-Ray using the Docker Managed
     Plugin System. This environment will use AWS EC2 along with EBS driver for
     REX-Ray to allow stateful applications to persist data.
-6. [Install REX-Ray as a Plugin on Docker for AWS (Cloudformation)](https://github.com/codedellemc/labs/tree/master/setup-dockerforaws)
+8. [Install REX-Ray as a Plugin on Docker for AWS (Cloudformation)](https://github.com/codedellemc/labs/tree/master/setup-dockerforaws)
 **EXPERIMENTAL** 
     - Bring persistent volume functionality to [Docker for AWS](https://docs.docker.com/docker-for-aws/) with REX-Ray. Customizing the Cloudformation template allows automated installations of REX-Ray to AWS AutoScaling Groups and access to EBS volumes.
 
